@@ -1,8 +1,34 @@
+# Currently Equipped
 HEAD, *Warmind's Avatar Headpiece, 10, 14,  6, 16, 10,  6
+ARMS, *Warmind's Avatar Gloves,     2, 22, 10, 16,  6, 10
+BODY, *Phoenix Protocol,            4,  2, 29,  2, 20,  8
+LEGS, *Warmind's Avatar Pants,     10, 22,  2, 10, 10, 10
+
+# In Inventory
+HEAD, -Reverie Dawn Hood,           2, 12, 14, 14, 22,  4
+HEAD, -Tusked Allegiance Hood,     20,  9,  2,  2,  2, 29
+ARMS, -Reverie Dawn Gloves,         2, 12, 12, 12, 20,  2
+ARMS, -Tusked Allegiance Gloves,    9,  2, 21,  2,  9, 22
+LEGS, -Eidolon Pursuant Pants,     16,  9,  8,  2, 16, 16
+LEGS, -Tusked Allegiance Boots,    16, 12,  6,  2,  2, 30
+LEGS, -Warmind's Avatar Pants,      2, 20, 10,  2, 30,  2
+
+# In Vault
 HEAD, Iron Companion Hood,          6,  2, 24, 21,  7,  2
 HEAD, Tusked Allegiance Hood,       2, 26,  2,  2,  6, 24
 HEAD, Warmind's Avatar Headpiece,   2, 16, 16,  2, 24,  7
-ARMS, *Warmind's Avatar Gloves,     2, 22, 10, 16,  6, 10
-BODY, *Phoenix Protocol,            4,  2, 29,  2, 20,  8
+ARMS, Eidolon Pursuant Gloves,      2, 20, 12,  2,  6, 24
+ARMS, Iron Companion Gloves,        7,  2, 22,  2,  6, 25
+ARMS, Ketchkiller's Gloves,        14, 15,  2, 14, 15,  2
+ARMS, Tusked Allegiance Gloves,    13,  2, 16,  6,  2, 26
+ARMS, Tusked Allegiance Gloves,    16, 14,  2, 16,  2, 13
+ARMS, Warmind's Avatar Gloves,     16,  6,  9, 24,  6,  2
+ARMS, Warmind's Avatar Gloves,      2,  9, 21, 16,  2, 12
+ARMS, Warmind's Avatar Gloves,      2, 27,  2, 19,  6,  7
 BODY, Phoenix Protocol,            20,  8,  7, 11, 15,  2
-LEGS, *Warmind's Avatar Pants,     10, 22,  2, 10, 10, 10
+LEGS, Ketchkiller's Boots,         24,  2,  6, 22,  2,  7
+LEGS, Reverie Dawn Boots,           2, 12, 17, 12, 20,  2
+LEGS, Tusked Allegiance Boots,      2,  2, 29, 27,  2,  2
+LEGS, Tusked Allegiance Boots,      2,  2, 28,  6,  2, 24
+LEGS, Tusked Allegiance Boots,      7, 23,  2,  2, 24,  7
+LEGS, Warmind's Avatar Pants,       2,  8, 23, 16,  2, 15
