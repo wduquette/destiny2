@@ -22,11 +22,11 @@ public class ArmorSet extends HashMap<Type,Armor> {
     }
 
     public void dump() {
-        var header = String.format("%-39s %s", "Armor Set", numbers());
+        var header = String.format("%-41s %s", "Armor Set", numbers());
         System.out.println(header);
 
         for (var type : Type.values()) {
-            System.out.println("    " + get(type).data());
+            System.out.println("  " + get(type).data());
         }
     }
 }

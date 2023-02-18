@@ -82,27 +82,6 @@ public class App {
         return set;
     }
 
-    private void add(
-        Type type,
-        String name,
-        int mob,
-        int res,
-        int rec,
-        int dis,
-        int int1,
-        int str)
-    {
-        var armor = new Armor(type, name);
-        armor.put(Stat.MOB, mob);
-        armor.put(Stat.RES, res);
-        armor.put(Stat.REC, rec);
-        armor.put(Stat.DIS, dis);
-        armor.put(Stat.INT, int1);
-        armor.put(Stat.STR, str);
-
-        vault.putIfAbsent(type, new ArrayList<>());
-        vault.get(type).add(armor);
-    }
 
     void dumpVault() {
         for (Type type : Type.values()) {
@@ -123,11 +102,13 @@ public class App {
         return result;
     }
 
+    int indexCount = 0;
+
     public Armor parseArmor(String line) {
         Scanner scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
         var type = Type.valueOf(scanner.next());
         var name = scanner.next().trim();
-        var armor = new Armor(type, name);
+        var armor = new Armor(++indexCount, type, name);
 
         Stat.stream().forEach(stat -> armor.put(stat, scanner.nextInt()));
 

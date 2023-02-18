@@ -1,12 +1,18 @@
 package destiny2;
 
 public class Armor extends StatVec {
+    private final int index;
     private final Type type;
     private final String name;
 
-    public Armor(Type type, String name) {
+    public Armor(int index, Type type, String name) {
+        this.index = index;
         this.type = type;
         this.name = name;
+    }
+
+    public int index() {
+        return index;
     }
 
     public Type type() {
@@ -18,7 +24,7 @@ public class Armor extends StatVec {
     }
 
     public String data() {
-        return String.format("%s %-30s %s", type, name, numbers());
+        return String.format("%03d %s %-30s %s", index, type, name, numbers());
     }
 
     public String toString() {
