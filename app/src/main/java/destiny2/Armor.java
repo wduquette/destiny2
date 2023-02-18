@@ -20,4 +20,8 @@ public class Armor extends StatVec {
     public String data() {
         return String.format("%s %-30s %s", type, name, numbers());
     }
+
+    public String toString() {
+        return "Armor[" + data() + "]";
+    }
 }

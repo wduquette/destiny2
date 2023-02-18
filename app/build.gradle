@@ -27,4 +27,6 @@ dependencies {
 application {
     // Define the main class for the application.
     mainClass = 'destiny2.App'
+    // Change the working directory for the run task.
+    tasks.run.workingDir = rootProject.projectDir
 }

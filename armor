@@ -1,0 +1,3 @@
+#!/bin/sh
+java --class-path=app/build/libs/app.jar destiny2.App $*
+

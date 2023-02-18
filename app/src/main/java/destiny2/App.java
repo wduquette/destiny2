@@ -3,12 +3,17 @@
  */
 package destiny2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.*;
 
 public class App {
+    public final ArmorComparator RES_REC_STR =
+        new ArmorComparator(Stat.RES, Stat.REC, Stat.STR);
+    public final ArmorComparator ALL_STATS =
+        new ArmorComparator(Stat.values());
+
     //-------------------------------------------------------------------------
     // Instance variables
 
@@ -18,20 +23,32 @@ public class App {
     //-------------------------------------------------------------------------
     // The App
 
-    public void start() {
-        // FIRST, add the contents of the vault (so far as I care)
-        add(Type.HEAD, "Warmind's Avatar Headpiece", 10, 14,  6, 16, 10,  6);
+    public void start(String filename, List<Stat> primaryStats) throws Exception {
+        println("In: " + System.getProperty("user.dir"));
+        // FIRST, load the armor from the file.
+        readVault(filename).forEach(armor -> {
+            vault.putIfAbsent(armor.type(), new ArrayList<Armor>());
+            vault.get(armor.type()).add(armor);
+        });
 
-        add(Type.ARMS, "Warmind's Avatar Gloves",     2, 22, 10, 16,  6, 10);
-
-        add(Type.BODY, "Phoenix Protocol",            4,  2, 29,  2, 20,  8);
-
-        add(Type.LEGS, "Warmind's Avatar Pants",     10, 22,  2, 10, 10, 10);
+        println("\nArmor from " + filename + ":\n");
+        dumpVault();
 
         // NEXT, generate the possible choices
         var sets = generateSets();
 
-        sets.forEach(ArmorSet::dump);
+        var comparator = (primaryStats.isEmpty())
+            ? ALL_STATS
+            : new ArmorComparator(primaryStats);
+
+        sets.sort(comparator.reversed());
+
+        println("\nPossible Sets by " + comparator + ":\n");
+
+        sets.stream().limit(5).forEach(set -> {
+            set.dump();
+            println("");
+        });
     }
 
     //-------------------------------------------------------------------------
@@ -95,6 +112,28 @@ public class App {
         }
     }
 
+    public List<Armor> readVault(String filename) throws Exception {
+        var result = new ArrayList<Armor>();
+
+        Files.lines(new File(filename).toPath())
+            .map(line -> line.trim())
+            .filter(line -> !line.isEmpty())
+            .forEach(line -> result.add(parseArmor(line)));
+
+        return result;
+    }
+
+    public Armor parseArmor(String line) {
+        Scanner scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
+        var type = Type.valueOf(scanner.next());
+        var name = scanner.next().trim();
+        var armor = new Armor(type, name);
+
+        Stat.stream().forEach(stat -> armor.put(stat, scanner.nextInt()));
+
+        return armor;
+    }
+
     void println(String text) {
         System.out.println(text);
     }
@@ -102,6 +141,22 @@ public class App {
     //-------------------------------------------------------------------------
     // Main
     public static void main(String[] args) {
-        new App().start();
+        if (args.length == 0) {
+            System.out.println("Usage: armor armor.dat stat...");
+            System.exit(0);
+        }
+
+        try {
+            var filename = args[0];
+            var primaryStats = Arrays.stream(args)
+                .skip(1)
+                .map(arg -> Stat.valueOf(arg.toUpperCase()))
+                .distinct()
+                .toList();
+            new App().start(filename, primaryStats);
+        } catch (Exception ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace(System.out);
+        }
     }
 }
