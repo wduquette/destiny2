@@ -72,13 +72,19 @@ public class ArmorApp {
         println("\nPossible sets listed by:  " + comparator);
         println("Minimum acceptable stats:" + mins.numbers() + "\n");
 
-        sets.stream()
+        var results = sets.stream()
             .filter(set -> set.dominates(mins))
             .limit(options.getLimit())
-            .forEach(set -> {
-                set.dump();
-                println("");
-            });
+            .toList();
+
+        for (int i = 0; i < results.size(); i++) {
+            results.get(i).setName("Choice #" + (i + 1));
+        }
+
+        results.forEach(set -> {
+            set.dump();
+            println("");
+        });
     }
 
     //-------------------------------------------------------------------------
