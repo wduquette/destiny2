@@ -4,8 +4,6 @@
 package destiny2;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 
 public class ArmorApp {
@@ -47,9 +45,11 @@ public class ArmorApp {
         var options = new Options(args);
 
         // FIRST, load the armor from the file.
-        readVault(options.getFileName()).forEach(armor -> {
-            vault.putIfAbsent(armor.type(), new ArrayList<>());
-            vault.get(armor.type()).add(armor);
+        var db = new ArmorFile(new File(options.getFileName()));
+
+        db.getPieces().forEach(piece -> {
+            vault.putIfAbsent(piece.type(), new ArrayList<>());
+            vault.get(piece.type()).add(piece);
         });
 
         println("\nArmor from " + options.getFileName() + ":\n");
@@ -133,46 +133,6 @@ public class ArmorApp {
             for (Armor armor : vault.get(type)) {
                 println(armor.data());
             }
-        }
-    }
-
-    //-------------------------------------------------------------------------
-    // File Parsing
-
-    int lineNumber = 0;
-
-    public List<Armor> readVault(String filename) throws AppError {
-        var result = new ArrayList<Armor>();
-
-        try {
-            Files.lines(new File(filename).toPath())
-                .map(line -> {
-                    ++lineNumber;
-                    return line.trim();
-                })
-                .filter(line -> !line.isEmpty())
-                .filter(line -> !line.startsWith("#"))
-                .forEach(line -> result.add(parseArmor(lineNumber, line)));
-        } catch (IOException ex) {
-            throw new AppError("I/O Error reading data: " + ex.getMessage());
-        }
-
-        return result;
-    }
-
-
-    public Armor parseArmor(int lineNumber, String line) throws AppError {
-        Scanner scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
-        try {
-            var type = Type.valueOf(scanner.next());
-            var rarity = Rarity.valueOf(scanner.next());
-            var name = scanner.next().trim();
-            var armor = new Armor(type, rarity, name);
-
-            Stat.stream().forEach(stat -> armor.put(stat, scanner.nextInt()));
-            return armor;
-        } catch (Exception ex) {
-            throw new AppError("Line " + lineNumber + ", " + ex.getMessage());
         }
     }
 
