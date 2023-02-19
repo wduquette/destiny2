@@ -12,7 +12,7 @@ public class ArmorSet extends HashMap<Type,Armor> implements StatInfo {
     // Constructor
 
     public ArmorSet() {
-        Type.forEach(t -> put(t, new Armor(t, "none")));
+        Type.forEach(t -> put(t, new Armor(t, Rarity.LEGEND, "none")));
     }
 
     //------------------------------------------------------------------------
@@ -77,7 +77,7 @@ public class ArmorSet extends HashMap<Type,Armor> implements StatInfo {
     }
 
     public String data() {
-        return String.format("%-37s %s", name, numbers());
+        return String.format("%-44s %s", name, numbers());
     }
 
     public void dump() {

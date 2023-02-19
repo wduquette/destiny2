@@ -156,8 +156,9 @@ public class ArmorApp {
         Scanner scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
         try {
             var type = Type.valueOf(scanner.next());
+            var rarity = Rarity.valueOf(scanner.next());
             var name = scanner.next().trim();
-            var armor = new Armor(type, name);
+            var armor = new Armor(type, rarity, name);
 
             Stat.stream().forEach(stat -> armor.put(stat, scanner.nextInt()));
             return armor;
