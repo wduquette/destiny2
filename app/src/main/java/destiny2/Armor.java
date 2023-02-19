@@ -34,4 +34,26 @@ public class Armor extends StatMap {
     public String toString() {
         return "Armor[" + data() + "]";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Armor armor = (Armor) o;
+
+        if (type != armor.type) return false;
+        if (rarity != armor.rarity) return false;
+        return name.equals(armor.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + type.hashCode();
+        result = 31 * result + rarity.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
 }
