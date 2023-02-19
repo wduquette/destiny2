@@ -65,12 +65,13 @@ public class ArmorApp {
         var sets = generateSets();
 
         var comparator = new ArmorComparator(options.getWeights());
+        var mins = options.getMins();
 
         sets.sort(comparator.reversed());
 
-        println("\nPossible sets listed by " + comparator + ":\n");
+        println("\nPossible sets listed by:  " + comparator);
+        println("Minimum acceptable stats:" + mins.numbers() + "\n");
 
-        var mins = options.getMins();
         sets.stream()
             .filter(set -> set.dominates(mins))
             .limit(options.getLimit())
@@ -162,9 +163,6 @@ public class ArmorApp {
     void println(String text) {
         System.out.println(text);
     }
-
-    //-------------------------------------------------------------------------
-    // Options
 
     //-------------------------------------------------------------------------
     // Main
