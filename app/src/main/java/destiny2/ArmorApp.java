@@ -12,8 +12,8 @@ public class ArmorApp {
     //-------------------------------------------------------------------------
     // Instance variables
 
-    private Map<Type, List<Armor>> vault = new HashMap<>();
-
+    // The loaded pieces of armor
+    private final Map<Type, List<Armor>> vault = new HashMap<>();
 
     //-------------------------------------------------------------------------
     // The App
@@ -25,7 +25,7 @@ public class ArmorApp {
                 
                 -limit num     -- Maximum number of results to display, default is 5
                 -mob weight    -- default is 1.0 for each
-                -res weight    
+                -res weight
                 -rec weight
                 -dis weight
                 -int weight
@@ -48,7 +48,7 @@ public class ArmorApp {
 
         // FIRST, load the armor from the file.
         readVault(options.getFileName()).forEach(armor -> {
-            vault.putIfAbsent(armor.type(), new ArrayList<Armor>());
+            vault.putIfAbsent(armor.type(), new ArrayList<>());
             vault.get(armor.type()).add(armor);
         });
 
@@ -68,15 +68,11 @@ public class ArmorApp {
 
         sets.sort(comparator.reversed());
 
-        println("\nPossible Sets by " + comparator + ":\n");
+        println("\nPossible sets listed by " + comparator + ":\n");
 
+        var mins = options.getMins();
         sets.stream()
-            .filter(set -> set.stats().get(Stat.MOB) >= options.getMins().get(Stat.MOB))
-            .filter(set -> set.stats().get(Stat.RES) >= options.getMins().get(Stat.RES))
-            .filter(set -> set.stats().get(Stat.REC) >= options.getMins().get(Stat.REC))
-            .filter(set -> set.stats().get(Stat.DIS) >= options.getMins().get(Stat.DIS))
-            .filter(set -> set.stats().get(Stat.INT) >= options.getMins().get(Stat.INT))
-            .filter(set -> set.stats().get(Stat.STR) >= options.getMins().get(Stat.STR))
+            .filter(set -> set.dominates(mins))
             .limit(options.getLimit())
             .forEach(set -> {
                 set.dump();
@@ -154,7 +150,7 @@ public class ArmorApp {
         try {
             var type = Type.valueOf(scanner.next());
             var name = scanner.next().trim();
-            var armor = new Armor(lineNumber, type, name);
+            var armor = new Armor(type, name);
 
             Stat.stream().forEach(stat -> armor.put(stat, scanner.nextInt()));
             return armor;
@@ -171,16 +167,13 @@ public class ArmorApp {
     // Options
 
     private static class Options {
-        private String fileName = null;
+        private final String fileName;
         private int limit = 5;
-        private final Map<Stat,Integer> mins = new HashMap<>();
-        private final Map<Stat,Double> weights = new HashMap<>();
+        private final StatMap mins = new StatMap();
+        private final StatWeights weights = new StatWeights();
 
         public Options(String[] args) throws AppError {
-            Stat.stream().forEach(s -> mins.put(s, 0));
-            Stat.stream().forEach(s -> weights.put(s, 1.0));
-
-            var opts = new ArrayDeque<String>(List.of(args));
+            var opts = new ArrayDeque<>(List.of(args));
 
             this.fileName = opts.poll();
 
@@ -192,47 +185,20 @@ public class ArmorApp {
                 }
 
                 switch (opt) {
-                    case "-limit":
-                        limit = requirePositiveInteger(opt, opts);
-                        break;
-                    case "-mob":
-                        weights.put(Stat.MOB, requireWeight(opt, opts));
-                        break;
-                    case "-res":
-                        weights.put(Stat.RES, requireWeight(opt, opts));
-                        break;
-                    case "-rec":
-                        weights.put(Stat.REC, requireWeight(opt, opts));
-                        break;
-                    case "-dis":
-                        weights.put(Stat.DIS, requireWeight(opt, opts));
-                        break;
-                    case "-int":
-                        weights.put(Stat.INT, requireWeight(opt, opts));
-                        break;
-                    case "-str":
-                        weights.put(Stat.STR, requireWeight(opt, opts));
-                        break;
-                    case "-minmob":
-                        mins.put(Stat.MOB, requirePositiveInteger(opt, opts));
-                        break;
-                    case "-minres":
-                        mins.put(Stat.RES, requirePositiveInteger(opt, opts));
-                        break;
-                    case "-minrec":
-                        mins.put(Stat.REC, requirePositiveInteger(opt, opts));
-                        break;
-                    case "-mindis":
-                        mins.put(Stat.DIS, requirePositiveInteger(opt, opts));
-                        break;
-                    case "-minint":
-                        mins.put(Stat.INT, requirePositiveInteger(opt, opts));
-                        break;
-                    case "-minstr":
-                        mins.put(Stat.STR, requirePositiveInteger(opt, opts));
-                        break;
-                    default:
-                        throw new AppError("Unknown option: " + opt);
+                    case "-limit"  -> limit = requirePositiveInteger(opt, opts);
+                    case "-mob"    -> weights.put(Stat.MOB, requireWeight(opt, opts));
+                    case "-res"    -> weights.put(Stat.RES, requireWeight(opt, opts));
+                    case "-rec"    -> weights.put(Stat.REC, requireWeight(opt, opts));
+                    case "-dis"    -> weights.put(Stat.DIS, requireWeight(opt, opts));
+                    case "-int"    -> weights.put(Stat.INT, requireWeight(opt, opts));
+                    case "-str"    -> weights.put(Stat.STR, requireWeight(opt, opts));
+                    case "-minmob" -> mins.put(Stat.MOB, requirePositiveInteger(opt, opts));
+                    case "-minres" -> mins.put(Stat.RES, requirePositiveInteger(opt, opts));
+                    case "-minrec" -> mins.put(Stat.REC, requirePositiveInteger(opt, opts));
+                    case "-mindis" -> mins.put(Stat.DIS, requirePositiveInteger(opt, opts));
+                    case "-minint" -> mins.put(Stat.INT, requirePositiveInteger(opt, opts));
+                    case "-minstr" -> mins.put(Stat.STR, requirePositiveInteger(opt, opts));
+                    default -> throw new AppError("Unknown option: " + opt);
                 }
             }
         }
@@ -245,11 +211,11 @@ public class ArmorApp {
             return limit;
         }
 
-        public Map<Stat, Integer> getMins() {
+        public StatMap getMins() {
             return mins;
         }
 
-        public Map<Stat, Double> getWeights() {
+        public StatWeights getWeights() {
             return weights;
         }
 

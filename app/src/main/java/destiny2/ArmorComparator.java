@@ -8,25 +8,17 @@ import java.util.Map;
  * Sorts by the primary stats, in order, followed by the sum of the remainder.
  */
 public class ArmorComparator implements Comparator<ArmorSet> {
-    private final Map<Stat,Double> weights;
+    private final StatWeights weights;
 
-    public ArmorComparator(Map<Stat,Double> weights) {
+    public ArmorComparator(StatWeights weights) {
         this.weights = weights;
     }
 
     @Override
     public int compare(ArmorSet set1, ArmorSet set2) {
-        var stats1 = set1.stats();
-        var stats2 = set2.stats();
-        var sum1 = 0.0;
-        var sum2 = 0.0;
-
-        for (var s : Stat.values()) {
-            sum1 += stats1.get(s)*weights.get(s);
-            sum2 += stats2.get(s)*weights.get(s);
-        }
-
-        return Double.compare(sum1, sum2);
+        return Double.compare(
+            set1.weightedSum(weights),
+            set2.weightedSum(weights));
     }
 
     @Override
@@ -34,8 +26,13 @@ public class ArmorComparator implements Comparator<ArmorSet> {
         var list = new ArrayList<String>();
 
         for (var s : Stat.values()) {
-            list.add(s + "=" + String.format("%03.1f", weights.get(s)));
+            var weight = weights.get(s);
+            if (weight == 1.0) {
+                list.add(s.toString());
+            } else if (weight != 0.0) {
+                list.add(s + "*" + String.format("%03.1f", weight));
+            }
         }
-        return String.join(", ", list);
+        return String.join(" + ", list);
     }
 }

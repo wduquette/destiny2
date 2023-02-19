@@ -1,10 +1,11 @@
 package destiny2;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
- * The kind of armor.
+ * The type of armor.
  */
 public enum Type {
     HEAD,
@@ -16,4 +17,7 @@ public enum Type {
         return Arrays.stream(values());
     }
 
+    public static void forEach(Consumer<Type> consumer) {
+        Arrays.stream(values()).forEach(consumer);
+    }
 }
