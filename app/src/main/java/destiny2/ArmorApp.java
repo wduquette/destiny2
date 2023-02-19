@@ -98,7 +98,16 @@ public class ArmorApp {
             for (var arms = 0; arms < vault.get(Type.ARMS).size(); arms++) {
                 for (var body = 0; body < vault.get(Type.BODY).size(); body++) {
                     for (var legs = 0; legs < vault.get(Type.LEGS).size(); legs++) {
-                        result.add(makeSet(head, arms, body, legs));
+                        // If there are two or more exotics, it isn't a valid
+                        // armor set.
+                        var set = makeSet(head, arms, body, legs);
+                        var numberOfExotics = set.values().stream()
+                            .filter(Armor::isExotic)
+                            .count();
+
+                        if (numberOfExotics <= 1) {
+                            result.add(set);
+                        }
                     }
                 }
             }
