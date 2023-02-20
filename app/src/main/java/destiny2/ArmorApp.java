@@ -58,7 +58,7 @@ public class ArmorApp {
 
         // NEXT, generate the possible choices
         var vault = new Vault(db.getPieces());
-        var sets = vault.allSets();
+        var sets = vault.allSuits();
 
         var comparator = new ArmorComparator(options.getWeights());
         var mins = options.getMins();

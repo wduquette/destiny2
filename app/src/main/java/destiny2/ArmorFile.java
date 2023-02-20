@@ -15,7 +15,7 @@ public class ArmorFile {
     transient private LineReader reader;
 
     // The complete suits of armor loaded from the file
-    private final List<ArmorSet> suits = new ArrayList<>();
+    private final List<Suit> suits = new ArrayList<>();
 
     // The pieces of armor loaded from the file.
     private final List<Armor> pieces = new ArrayList<>();
@@ -64,16 +64,16 @@ public class ArmorFile {
         }
     }
 
-    private void addSuit(ArmorSet armorSet) {
-        suits.add(armorSet);
+    private void addSuit(Suit suit) {
+        suits.add(suit);
     }
 
-    // Parses the armor set from the line.  The first line identifies the
-    // set; the pieces are parsed from the four subsequent lines.
-    private ArmorSet parseSuit(String line) {
+    // Parses the suit name from the line. The pieces are parsed from the four
+    // subsequent lines.
+    private Suit parseSuit(String line) {
         var scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
 
-        var suit = new ArmorSet();
+        var suit = new Suit();
         scanner.next(); // Skip "suit"
         suit.setName(scanner.next());
 
@@ -131,7 +131,7 @@ public class ArmorFile {
         return pieces;
     }
 
-    public List<ArmorSet> getSuits() {
+    public List<Suit> getSuits() {
         return suits;
     }
 

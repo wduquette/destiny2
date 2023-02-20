@@ -2,12 +2,11 @@ package destiny2;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Map;
 
 /**
  * Sorts by the primary stats, in order, followed by the sum of the remainder.
  */
-public class ArmorComparator implements Comparator<ArmorSet> {
+public class ArmorComparator implements Comparator<Suit> {
     private final StatWeights weights;
 
     public ArmorComparator(StatWeights weights) {
@@ -15,7 +14,7 @@ public class ArmorComparator implements Comparator<ArmorSet> {
     }
 
     @Override
-    public int compare(ArmorSet set1, ArmorSet set2) {
+    public int compare(Suit set1, Suit set2) {
         return Double.compare(
             set1.weightedSum(weights),
             set2.weightedSum(weights));

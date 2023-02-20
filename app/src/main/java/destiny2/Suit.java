@@ -2,24 +2,27 @@ package destiny2;
 
 import java.util.HashMap;
 
-public class ArmorSet extends HashMap<Type,Armor> implements StatInfo {
+/**
+ * A complete suit of armor: HEAD, ARMS, BODY, LEGS.
+ */
+public class Suit extends HashMap<Type,Armor> implements StatInfo {
     //------------------------------------------------------------------------
     // Instance Variables
 
-    private String name = "Armor Set";
+    private String name = "Suit";
 
     //------------------------------------------------------------------------
     // Constructor
 
-    public ArmorSet() {
+    public Suit() {
         Type.forEach(t -> put(t, new Armor(t, Rarity.LEGEND, "none")));
     }
 
     //------------------------------------------------------------------------
-    // ArmorSet API
+    // Suit API
 
     /**
-     * Get the armor set name
+     * Get the suit name
      * @return The name
      */
     public String getName() {
@@ -27,7 +30,7 @@ public class ArmorSet extends HashMap<Type,Armor> implements StatInfo {
     }
 
     /**
-     * Set the armor set name
+     * Set the suit name
      * @param name The name
      */
     public void setName(String name) {

@@ -3,7 +3,6 @@ package destiny2;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A collection of armor, by type.
@@ -47,8 +46,8 @@ public class Vault extends HashMap<Type, List<Armor>> {
      * @param legs Index of the legs piece
      * @return The set
      */
-    public ArmorSet makeSet(int head, int arms, int body, int legs) {
-        var set = new ArmorSet();
+    public Suit makeSet(int head, int arms, int body, int legs) {
+        var set = new Suit();
 
         set.put(Type.HEAD, get(Type.HEAD).get(head));
         set.put(Type.ARMS, get(Type.ARMS).get(arms));
@@ -62,8 +61,8 @@ public class Vault extends HashMap<Type, List<Armor>> {
      * Gets all valid sets of armor for the pieces in this vault.
      * @return The list of sets.
      */
-    public List<ArmorSet> allSets() {
-        var result = new ArrayList<ArmorSet>();
+    public List<Suit> allSuits() {
+        var result = new ArrayList<Suit>();
 
         // Is there a cleaner, more concise way to do this?
         for (var head = 0; head < size(Type.HEAD); head++) {
