@@ -56,8 +56,20 @@ public class ArmorApp {
             println("");
         });
 
+        // NEXT, get the suit to compare with.
+        Suit current;
+
+        if (options.getCompareWith() != null) {
+            current = db.getSuits().stream()
+                .filter(suit -> suit.getName().equals(options.getCompareWith()))
+                .findFirst()
+                .orElseThrow(() ->
+                    new AppError("Unknown suit: " + options.getCompareWith()));
+        } else {
+            current = (!db.getSuits().isEmpty()) ? db.getSuits().get(0) : null;
+        }
+
         // NEXT, generate the possible choices
-        var current = (!db.getSuits().isEmpty()) ? db.getSuits().get(0) : null;
         var vault = new Vault(db.getPieces());
         var suits = vault.allSuits();
 
@@ -81,7 +93,6 @@ public class ArmorApp {
         for (int i = 0; i < results.size(); i++) {
             results.get(i).setName("Choice #" + (i + 1));
         }
-
 
         results.forEach(set -> {
             if (current !=  null) {
@@ -107,7 +118,7 @@ public class ArmorApp {
             new ArmorApp().app(args);
         } catch (AppError ex) {
             System.out.println("Error: " + ex.getMessage());
-            ex.printStackTrace(System.out);
+//            ex.printStackTrace(System.out);
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             ex.printStackTrace(System.out);

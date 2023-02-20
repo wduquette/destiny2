@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class Options {
     private final String fileName;
+    private String compareWith = null;
     private int limit = 5;
     private final StatMap mins = new StatMap();
     private final StatWeights weights = new StatWeights();
@@ -33,6 +34,8 @@ public class Options {
             switch (opt) {
                 case "-limit" ->
                     limit = requirePositiveInteger(opt, opts);
+                case "-compare" ->
+                    compareWith = requireString(opt, opts);
                 case "-mob" ->
                     weights.put(Stat.MOB, requireWeight(opt, opts));
                 case "-res" ->
@@ -81,6 +84,14 @@ public class Options {
     }
 
     /**
+     * Gets the name of the armor set to compare with.
+     * @return The set.
+     */
+    public String getCompareWith() {
+        return compareWith;
+    }
+
+    /**
      * Gets the minimum acceptable value for each stat.
      * @return The minimums
      */
@@ -99,13 +110,21 @@ public class Options {
     //-------------------------------------------------------------------------
     // Helpers
 
-    private int requirePositiveInteger(String opt, Deque<String> opts)
-        throws AppError {
+    private String requireString(String opt, Deque<String> opts)
+        throws AppError
+    {
         if (opts.isEmpty()) {
             throw new AppError("Missing value for " + opt);
         }
 
-        var valueString = opts.poll();
+        return opts.poll();
+    }
+
+    private int requirePositiveInteger(String opt, Deque<String> opts)
+        throws AppError
+    {
+        var valueString = requireString(opt, opts);
+
         try {
             var value = Integer.parseInt(valueString);
 
@@ -120,12 +139,10 @@ public class Options {
     }
 
     private double requireWeight(String opt, Deque<String> opts)
-        throws AppError {
-        if (opts.isEmpty()) {
-            throw new AppError("Missing value for " + opt);
-        }
+        throws AppError
+    {
+        var valueString = requireString(opt, opts);
 
-        var valueString = opts.poll();
         try {
             var value = Double.parseDouble(valueString);
 
