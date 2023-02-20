@@ -4,7 +4,6 @@
 package destiny2;
 
 import java.io.File;
-import java.util.*;
 
 public class ArmorApp {
     //-------------------------------------------------------------------------
@@ -52,15 +51,15 @@ public class ArmorApp {
             System.out.printf("%04d %s\n", db.getLineNumber(p), p.data()));
 
         // NEXT, get the current set.
-        var vault = makeVault(db.getPieces());
+        var vault = new Vault(db.getPieces());
         // TODO: Should be defined in file!
-        var current = makeSet(vault, 0, 0, 0, 0);
+        var current = vault.makeSet(0, 0, 0, 0);
 
         println("\nEquipped set:\n");
         current.dump();
 
         // NEXT, generate the possible choices
-        var sets = generateArmorSets(db.getPieces());
+        var sets = vault.allSets();
 
         var comparator = new ArmorComparator(options.getWeights());
         var mins = options.getMins();
@@ -87,58 +86,6 @@ public class ArmorApp {
 
     //-------------------------------------------------------------------------
     // Data Functions
-
-    // Given a list of pieces of armor, group them by armor type
-    private Map<Type,List<Armor>> makeVault(List<Armor> pieces) {
-        Map<Type,List<Armor>> vault = new HashMap<>();
-
-        db.getPieces().forEach(piece -> {
-            vault.putIfAbsent(piece.type(), new ArrayList<>());
-            vault.get(piece.type()).add(piece);
-        });
-
-        return vault;
-    }
-
-    // Generates all possible armor sets from the available pieces,
-    // excluding sets with more than one exotic.
-    private List<ArmorSet> generateArmorSets(List<Armor> pieces) {
-        var vault = makeVault(pieces);
-        var result = new ArrayList<ArmorSet>();
-
-        // Is there a cleaner, more concise way to do this?
-        for (var head = 0; head < vault.get(Type.HEAD).size(); head++) {
-            for (var arms = 0; arms < vault.get(Type.ARMS).size(); arms++) {
-                for (var body = 0; body < vault.get(Type.BODY).size(); body++) {
-                    for (var legs = 0; legs < vault.get(Type.LEGS).size(); legs++) {
-                        // If there are two or more exotics, it isn't a valid
-                        // armor set.
-                        var set = makeSet(vault, head, arms, body, legs);
-                        var numberOfExotics = set.values().stream()
-                            .filter(Armor::isExotic)
-                            .count();
-
-                        if (numberOfExotics <= 1) {
-                            result.add(set);
-                        }
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private ArmorSet makeSet(Map<Type,List<Armor>> vault, int head, int arms, int body, int legs) {
-        var set = new ArmorSet();
-
-        set.put(Type.HEAD, vault.get(Type.HEAD).get(head));
-        set.put(Type.ARMS, vault.get(Type.ARMS).get(arms));
-        set.put(Type.BODY, vault.get(Type.BODY).get(body));
-        set.put(Type.LEGS, vault.get(Type.LEGS).get(legs));
-
-        return set;
-    }
 
     void println(String text) {
         System.out.println(text);
