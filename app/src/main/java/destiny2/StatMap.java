@@ -28,6 +28,13 @@ public class StatMap extends HashMap<Stat,Integer> implements StatInfo {
     }
 
     @Override
+    public StatInfo diff(StatInfo other) {
+        var stats = new StatMap();
+        Stat.forEach(s -> stats.put(s, stat(s) - other.stat(s)));
+        return stats;
+    }
+
+    @Override
     public boolean dominates(StatInfo other) {
         for (var e : entrySet()) {
             if (e.getValue() < other.stat(e.getKey())) {
@@ -38,9 +45,10 @@ public class StatMap extends HashMap<Stat,Integer> implements StatInfo {
         return true;
     }
 
+
     @Override
     public String numbers() {
-        return String.format(" %2d  %2d  %2d  %2d  %2d  %2d = %2d",
+        return String.format("%3d %3d %3d %3d %3d %3d = %4d",
             stat(Stat.MOB),
             stat(Stat.RES),
             stat(Stat.REC),

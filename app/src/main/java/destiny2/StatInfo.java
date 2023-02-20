@@ -22,6 +22,13 @@ public interface StatInfo {
     double weightedSum(StatWeights weights);
 
     /**
+     * Computes the difference between the two sets of stats.
+     * @param other The other stats
+     * @return the difference
+     */
+    StatInfo diff(StatInfo other);
+
+    /**
      * Returns true if every entry in this map is greater than or equal to
      * every entry in the other.
      * @param other The other map

@@ -57,6 +57,7 @@ public class ArmorApp {
         });
 
         // NEXT, generate the possible choices
+        var current = (!db.getSuits().isEmpty()) ? db.getSuits().get(0) : null;
         var vault = new Vault(db.getPieces());
         var suits = vault.allSuits();
 
@@ -68,6 +69,8 @@ public class ArmorApp {
         println("Number of possible suits:  " + suits.size());
         println("Possible suits ordered by: " + comparator);
         println("Minimum acceptable stats: " + mins.numbers());
+        println("Comparing against suit:    " +
+            (current != null ? current.getName() : "n/a"));
         println("");
 
         var results = suits.stream()
@@ -79,8 +82,13 @@ public class ArmorApp {
             results.get(i).setName("Choice #" + (i + 1));
         }
 
+
         results.forEach(set -> {
-            set.dump();
+            if (current !=  null) {
+                set.dumpComparison(current);
+            } else {
+                set.dump();
+            }
             println("");
         });
     }

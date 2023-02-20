@@ -62,6 +62,11 @@ public class Suit extends HashMap<Type,Armor> implements StatInfo {
     }
 
     @Override
+    public StatInfo diff(StatInfo other) {
+        return stats().diff(other);
+    }
+
+    @Override
     public String numbers() {
         return stats().numbers();
     }
@@ -85,9 +90,17 @@ public class Suit extends HashMap<Type,Armor> implements StatInfo {
 
     public void dump() {
         System.out.println(data());
+        Type.forEach(type -> System.out.println("  " + get(type).data()));
+    }
 
-        for (var type : Type.values()) {
-            System.out.println("  " + get(type).data());
-        }
+    public void dumpComparison(Suit other) {
+        System.out.println(data() + "  -- " + diff(other).numbers());
+        Type.forEach(type -> {
+            var piece1 = get(type);
+            var piece2 = other.get(type);
+            System.out.println("  " + piece1.data()
+                + "  -- " + piece1.diff(piece2).numbers());
+        });
+
     }
 }
