@@ -58,17 +58,19 @@ public class ArmorApp {
 
         // NEXT, generate the possible choices
         var vault = new Vault(db.getPieces());
-        var sets = vault.allSuits();
+        var suits = vault.allSuits();
 
         var comparator = new ArmorComparator(options.getWeights());
         var mins = options.getMins();
 
-        sets.sort(comparator.reversed());
+        suits.sort(comparator.reversed());
 
-        println("\nPossible sets listed by:  " + comparator);
-        println("Minimum acceptable stats:" + mins.numbers() + "\n");
+        println("Number of possible suits:  " + suits.size());
+        println("Possible suits ordered by: " + comparator);
+        println("Minimum acceptable stats: " + mins.numbers());
+        println("");
 
-        var results = sets.stream()
+        var results = suits.stream()
             .filter(set -> set.dominates(mins))
             .limit(options.getLimit())
             .toList();
