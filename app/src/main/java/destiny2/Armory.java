@@ -7,12 +7,13 @@ import java.util.List;
 /**
  * A collection of armor, by type.
  */
-public class Vault extends HashMap<Type, List<Armor>> {
+@SuppressWarnings("unused")
+public class Armory extends HashMap<Type, List<Armor>> {
     /**
-     * Creates a new vault out of the given pieces
+     * Creates a new armory out of the given pieces
      * @param pieces The pieces of armor.
      */
-    public Vault(List<Armor> pieces) {
+    public Armory(List<Armor> pieces) {
         pieces.forEach(piece -> {
             putIfAbsent(piece.type(), new ArrayList<>());
             get(piece.type()).add(piece);
@@ -20,7 +21,7 @@ public class Vault extends HashMap<Type, List<Armor>> {
     }
 
     /**
-     * Get the number of pieces of the given type in the vault
+     * Get the number of pieces of the given type in the armory
      * @param type The type
      * @return The number of pieces.
      */
@@ -39,27 +40,27 @@ public class Vault extends HashMap<Type, List<Armor>> {
     }
 
     /**
-     * Make the armor set for the indicated pieces of armor
+     * Make the suit for the indicated pieces of armor
      * @param head Index of the head piece
      * @param arms Index of the arms piece
      * @param body Index of the body piece
      * @param legs Index of the legs piece
-     * @return The set
+     * @return The suit
      */
-    public Suit makeSet(int head, int arms, int body, int legs) {
-        var set = new Suit();
+    public Suit makeSuit(int head, int arms, int body, int legs) {
+        var suit = new Suit();
 
-        set.put(Type.HEAD, get(Type.HEAD).get(head));
-        set.put(Type.ARMS, get(Type.ARMS).get(arms));
-        set.put(Type.BODY, get(Type.BODY).get(body));
-        set.put(Type.LEGS, get(Type.LEGS).get(legs));
+        suit.put(Type.HEAD, get(Type.HEAD).get(head));
+        suit.put(Type.ARMS, get(Type.ARMS).get(arms));
+        suit.put(Type.BODY, get(Type.BODY).get(body));
+        suit.put(Type.LEGS, get(Type.LEGS).get(legs));
 
-        return set;
+        return suit;
     }
 
     /**
-     * Gets all valid sets of armor for the pieces in this vault.
-     * @return The list of sets.
+     * Gets all valid suits of armor for the pieces in this armory.
+     * @return The list of suits.
      */
     public List<Suit> allSuits() {
         var result = new ArrayList<Suit>();
@@ -70,15 +71,15 @@ public class Vault extends HashMap<Type, List<Armor>> {
                 for (var body = 0; body < size(Type.BODY); body++) {
                     for (var legs = 0; legs < size(Type.LEGS); legs++) {
                         // If there are two or more exotics, it isn't a valid
-                        // armor set.
-                        var set = makeSet(head, arms, body, legs);
+                        // suit
+                        var suit = makeSuit(head, arms, body, legs);
 
-                        var numberOfExotics = set.values().stream()
+                        var numberOfExotics = suit.values().stream()
                             .filter(Armor::isExotic)
                             .count();
 
                         if (numberOfExotics <= 1) {
-                            result.add(set);
+                            result.add(suit);
                         }
                     }
                 }

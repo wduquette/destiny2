@@ -6,10 +6,10 @@ import java.util.Comparator;
 /**
  * Sorts by the primary stats, in order, followed by the sum of the remainder.
  */
-public class ArmorComparator implements Comparator<Suit> {
+public class SuitComparator implements Comparator<Suit> {
     private final StatWeights weights;
 
-    public ArmorComparator(StatWeights weights) {
+    public SuitComparator(StatWeights weights) {
         this.weights = weights;
     }
 

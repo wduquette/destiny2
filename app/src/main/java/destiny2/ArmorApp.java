@@ -70,10 +70,9 @@ public class ArmorApp {
         }
 
         // NEXT, generate the possible choices
-        var vault = new Vault(db.getPieces());
-        var suits = vault.allSuits();
+        var suits = new Armory(db.getPieces()).allSuits();
 
-        var comparator = new ArmorComparator(options.getWeights());
+        var comparator = new SuitComparator(options.getWeights());
         var mins = options.getMins();
 
         suits.sort(comparator.reversed());
