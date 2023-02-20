@@ -10,8 +10,8 @@ public class ArmorApp {
     //-------------------------------------------------------------------------
     // Instance variables
 
-    // The loaded pieces of armor
-    private final Map<Type, List<Armor>> vault = new HashMap<>();
+    // The data loaded from the armor file.
+    private ArmorFile db;
 
     //-------------------------------------------------------------------------
     // The App
@@ -45,24 +45,21 @@ public class ArmorApp {
         var options = new Options(args);
 
         // FIRST, load the armor from the file.
-        var db = new ArmorFile(new File(options.getFileName()));
-
-        db.getPieces().forEach(piece -> {
-            vault.putIfAbsent(piece.type(), new ArrayList<>());
-            vault.get(piece.type()).add(piece);
-        });
+        db = new ArmorFile(new File(options.getFileName()));
 
         println("\nArmor from " + options.getFileName() + ":\n");
-        dumpVault();
+        db.getPieces().forEach(p -> println(p.data()));
 
         // NEXT, get the current set.
-        var current = makeSet(0, 0, 0, 0);
+        var vault = makeVault(db.getPieces());
+        // TODO: Should be defined in file!
+        var current = makeSet(vault, 0, 0, 0, 0);
 
         println("\nEquipped set:\n");
         current.dump();
 
         // NEXT, generate the possible choices
-        var sets = generateSets();
+        var sets = generateArmorSets(db.getPieces());
 
         var comparator = new ArmorComparator(options.getWeights());
         var mins = options.getMins();
@@ -88,19 +85,34 @@ public class ArmorApp {
     }
 
     //-------------------------------------------------------------------------
-    // Data Builders
+    // Data Functions
 
-    // Generates all possible armor sets from the available choices.
-    private List<ArmorSet> generateSets() {
+    // Given a list of pieces of armor, group them by armor type
+    private Map<Type,List<Armor>> makeVault(List<Armor> pieces) {
+        Map<Type,List<Armor>> vault = new HashMap<>();
+
+        db.getPieces().forEach(piece -> {
+            vault.putIfAbsent(piece.type(), new ArrayList<>());
+            vault.get(piece.type()).add(piece);
+        });
+
+        return vault;
+    }
+
+    // Generates all possible armor sets from the available pieces,
+    // excluding sets with more than one exotic.
+    private List<ArmorSet> generateArmorSets(List<Armor> pieces) {
+        var vault = makeVault(pieces);
         var result = new ArrayList<ArmorSet>();
 
+        // Is there a cleaner, more concise way to do this?
         for (var head = 0; head < vault.get(Type.HEAD).size(); head++) {
             for (var arms = 0; arms < vault.get(Type.ARMS).size(); arms++) {
                 for (var body = 0; body < vault.get(Type.BODY).size(); body++) {
                     for (var legs = 0; legs < vault.get(Type.LEGS).size(); legs++) {
                         // If there are two or more exotics, it isn't a valid
                         // armor set.
-                        var set = makeSet(head, arms, body, legs);
+                        var set = makeSet(vault, head, arms, body, legs);
                         var numberOfExotics = set.values().stream()
                             .filter(Armor::isExotic)
                             .count();
@@ -116,7 +128,7 @@ public class ArmorApp {
         return result;
     }
 
-    private ArmorSet makeSet(int head, int arms, int body, int legs) {
+    private ArmorSet makeSet(Map<Type,List<Armor>> vault, int head, int arms, int body, int legs) {
         var set = new ArmorSet();
 
         set.put(Type.HEAD, vault.get(Type.HEAD).get(head));
@@ -125,15 +137,6 @@ public class ArmorApp {
         set.put(Type.LEGS, vault.get(Type.LEGS).get(legs));
 
         return set;
-    }
-
-
-    void dumpVault() {
-        for (Type type : Type.values()) {
-            for (Armor armor : vault.get(type)) {
-                println(armor.data());
-            }
-        }
     }
 
     void println(String text) {
