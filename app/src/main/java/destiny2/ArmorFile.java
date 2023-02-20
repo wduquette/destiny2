@@ -2,7 +2,6 @@ package destiny2;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -12,14 +11,17 @@ public class ArmorFile {
     //-------------------------------------------------------------------------
     // Instance Variables
 
-    // Line counter; used while parsing
-    transient private int lineNumber = 0;
+    // A reader for the lines in the file.
+    transient private LineReader reader;
 
-    // The pieces of armor loaded from the file
+    // The complete suits of armor loaded from the file
+    private final List<ArmorSet> suits = new ArrayList<>();
+
+    // The pieces of armor loaded from the file.
     private final List<Armor> pieces = new ArrayList<>();
 
     // The line number for each piece of armor.
-    private final Map<Armor,Integer> armor2line = new HashMap<>();
+    private final Map<Armor,Integer> piece2line = new HashMap<>();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -31,20 +33,77 @@ public class ArmorFile {
      */
     public ArmorFile(File armorFile) throws AppError {
         try {
-            Files.lines(armorFile.toPath())
-                .map(line -> {
-                    ++lineNumber;
-                    return line.trim();
-                })
-                .filter(line -> !line.isEmpty())
-                .filter(line -> !line.startsWith("#"))
-                .forEach(line -> addPiece(parseArmor(lineNumber, line)));
+            reader = new LineReader(armorFile);
+
+            parseFile();
         } catch (IOException ex) {
             throw new AppError("I/O Error reading data: " + ex.getMessage());
+        } finally {
+            reader = null;
         }
     }
 
-    private Armor parseArmor(int lineNumber, String line) throws AppError {
+    //-------------------------------------------------------------------------
+    // The parser
+
+    private void parseFile() throws AppError {
+        while (!reader.isEmpty()) {
+            var line = reader.next().trim();
+
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+            }
+            var scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
+
+            if (scanner.hasNext("suit")) {
+                addSuit(parseSuit(line));
+                reader.next();  // For now, skip it.
+            } else {
+                addPiece(parsePiece(line));
+            }
+        }
+    }
+
+    private void addSuit(ArmorSet armorSet) {
+        suits.add(armorSet);
+    }
+
+    // Parses the armor set from the line.  The first line identifies the
+    // set; the pieces are parsed from the four subsequent lines.
+    private ArmorSet parseSuit(String line) {
+        var scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
+
+        var suit = new ArmorSet();
+        scanner.next(); // Skip "suit"
+        suit.setName(scanner.next());
+
+        Type.forEach(type -> suit.put(type, parsePiece(type, reader.next())));
+
+        return suit;
+    }
+
+
+    // Adds the piece of armor to the list, remembering its line number.
+    private void addPiece(Armor piece) {
+        if (!pieces.contains(piece)) {
+            pieces.add(piece);
+            piece2line.put(piece, reader.lineNumber());
+        }
+    }
+
+    private Armor parsePiece(Type type, String line) {
+        var piece = parsePiece(line);
+
+        if (piece.type() != type) {
+            throw new AppError("Expected " + type + " at line " +
+                reader.lineNumber());
+        }
+
+        return piece;
+    }
+
+    // Parses the piece of armor from the given line
+    private Armor parsePiece(String line) throws AppError {
         Scanner scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
 
         try {
@@ -54,18 +113,12 @@ public class ArmorFile {
             var armor = new Armor(type, rarity, name);
 
             Stat.stream().forEach(stat -> armor.put(stat, scanner.nextInt()));
-            armor2line.put(armor, lineNumber);
             return armor;
         } catch (Exception ex) {
-            throw new AppError("Line " + lineNumber + ", " + ex.getMessage());
+            throw new AppError("Line " + reader.lineNumber() + ", " + ex.getMessage());
         }
     }
 
-    private void addPiece(Armor piece) {
-        if (!pieces.contains(piece)) {
-            pieces.add(piece);
-        }
-    }
 
     //-------------------------------------------------------------------------
     // Public API
@@ -78,6 +131,10 @@ public class ArmorFile {
         return pieces;
     }
 
+    public List<ArmorSet> getSuits() {
+        return suits;
+    }
+
     /**
      * Gets the line number of the piece of armor in the file, or -1 if
      * the armor was not found.
@@ -85,6 +142,6 @@ public class ArmorFile {
      * @return The line number, 1 to N, or -1 if not found.
      */
     public int getLineNumber(Armor piece) {
-        return armor2line.getOrDefault(piece, -1);
+        return piece2line.getOrDefault(piece, -1);
     }
 }

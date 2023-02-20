@@ -1,17 +1,26 @@
-# Currently Equipped
+# Solar Warlock Armor
+suit, Current
 HEAD, LEGEND, *Tusked Allegiance Hood,      2, 26,  2,  2,  6, 24
 ARMS, LEGEND, *Warmind's Avatar Gloves,     2, 22, 10, 16,  6, 10
 BODY, EXOTIC, *Phoenix Protocol,            4,  2, 29,  2, 20,  8
 LEGS, LEGEND, *Tusked Allegiance Boots,    16, 12,  6,  2,  2, 30
 
-# Previous Set
+suit, Previous
 HEAD, LEGEND, -Warmind's Avatar Headpiece, 10, 14,  6, 16, 10,  6
+ARMS, LEGEND, *Warmind's Avatar Gloves,     2, 22, 10, 16,  6, 10
+BODY, EXOTIC, *Phoenix Protocol,            4,  2, 29,  2, 20,  8
 LEGS, LEGEND, -Warmind's Avatar Pants,     10, 22,  2, 10, 10, 10
 
-# Other exotics being considered
+# Exotics being considered
+BODY, EXOTIC, *Phoenix Protocol,            4,  2, 29,  2, 20,  8
 BODY, EXOTIC, Phoenix Protocol,            20,  8,  7, 11, 15,  2
 
 # In Vault
+HEAD, LEGEND, *Tusked Allegiance Hood,      2, 26,  2,  2,  6, 24
+ARMS, LEGEND, *Warmind's Avatar Gloves,     2, 22, 10, 16,  6, 10
+LEGS, LEGEND, *Tusked Allegiance Boots,    16, 12,  6,  2,  2, 30
+HEAD, LEGEND, -Warmind's Avatar Headpiece, 10, 14,  6, 16, 10,  6
+LEGS, LEGEND, -Warmind's Avatar Pants,     10, 22,  2, 10, 10, 10
 HEAD, LEGEND, Iron Companion Hood,          6,  2, 24, 21,  7,  2
 HEAD, LEGEND, Reverie Dawn Hood,            2, 12, 14, 14, 22,  4
 HEAD, LEGEND, Tusked Allegiance Hood,      20,  9,  2,  2,  2, 29

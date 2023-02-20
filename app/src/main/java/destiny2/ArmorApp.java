@@ -46,19 +46,18 @@ public class ArmorApp {
         // FIRST, load the armor from the file.
         db = new ArmorFile(new File(options.getFileName()));
 
-        println("\nArmor from " + options.getFileName() + ":\n");
+        println("\nPieces from " + options.getFileName() + ":\n");
         db.getPieces().forEach(p ->
             System.out.printf("%04d %s\n", db.getLineNumber(p), p.data()));
 
-        // NEXT, get the current set.
-        var vault = new Vault(db.getPieces());
-        // TODO: Should be defined in file!
-        var current = vault.makeSet(0, 0, 0, 0);
-
-        println("\nEquipped set:\n");
-        current.dump();
+        println("\nSuits from " + options.getFileName() + ":\n");
+        db.getSuits().forEach(s -> {
+            s.dump();
+            println("");
+        });
 
         // NEXT, generate the possible choices
+        var vault = new Vault(db.getPieces());
         var sets = vault.allSets();
 
         var comparator = new ArmorComparator(options.getWeights());
@@ -98,6 +97,7 @@ public class ArmorApp {
             new ArmorApp().app(args);
         } catch (AppError ex) {
             System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace(System.out);
         } catch (Exception ex) {
             System.out.println("Unexpected Exception: " + ex.getMessage());
             ex.printStackTrace(System.out);
