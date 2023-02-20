@@ -48,7 +48,8 @@ public class ArmorApp {
         db = new ArmorFile(new File(options.getFileName()));
 
         println("\nArmor from " + options.getFileName() + ":\n");
-        db.getPieces().forEach(p -> println(p.data()));
+        db.getPieces().forEach(p ->
+            System.out.printf("%04d %s\n", db.getLineNumber(p), p.data()));
 
         // NEXT, get the current set.
         var vault = makeVault(db.getPieces());
