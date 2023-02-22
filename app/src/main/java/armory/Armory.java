@@ -27,10 +27,10 @@ public class Armory {
     private final Map<Armor,Integer> piece2line = new HashMap<>();
 
     // The minimum acceptable stats
-    private final StatMap minStats = new StatMap();
+    private StatMap minStats = new StatMap();
 
-    // The user's weights for each stat.
-    private final StatWeights weights = new StatWeights();
+    // The user's weights for each stat
+    private StatWeights weights = new StatWeights();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -66,7 +66,10 @@ public class Armory {
 
             if (scanner.hasNext("suit")) {
                 addSuit(parseSuit(line));
-                reader.next();  // For now, skip it.
+            } else if (scanner.hasNext("weights")) {
+                weights = parseWeights(line);
+            } else if (scanner.hasNext("minStats")) {
+                minStats = parseMinStats(line);
             } else {
                 addPiece(parsePiece(line));
             }
@@ -121,8 +124,43 @@ public class Armory {
             var name = parseName(scanner).trim();
             var armor = new Armor(type, rarity, name);
 
+            // TODO: Validate that stat values are non-negative
             Stat.stream().forEach(stat -> armor.put(stat, scanner.nextInt()));
             return armor;
+        } catch (Exception ex) {
+            throw new AppError("Line " + reader.lineNumber() + ", " + ex.getMessage());
+        }
+    }
+
+    // Parses stat weights
+    private StatWeights parseWeights(String line) throws AppError {
+        Scanner scanner = new Scanner(line).useDelimiter("\\s+");
+
+        var map = new StatWeights();
+
+        try {
+            scanner.next(); // Skip "weights"
+
+            // TODO: Validate that weights are non-negative
+            Stat.stream().forEach(stat -> map.put(stat, scanner.nextDouble()));
+            return map;
+        } catch (Exception ex) {
+            throw new AppError("Line " + reader.lineNumber() + ", " + ex.getMessage());
+        }
+    }
+
+    // Parses stat minimums
+    private StatMap parseMinStats(String line) throws AppError {
+        Scanner scanner = new Scanner(line).useDelimiter("\\s+");
+
+        var map = new StatMap();
+
+        try {
+            scanner.next(); // Skip "minStats"
+
+            // TODO: Validate that stat values are non-negative
+            Stat.stream().forEach(stat -> map.put(stat, scanner.nextInt()));
+            return map;
         } catch (Exception ex) {
             throw new AppError("Line " + reader.lineNumber() + ", " + ex.getMessage());
         }

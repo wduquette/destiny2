@@ -1,9 +1,14 @@
 # Solar Warlock Armor
+
+# Settings used to find the "Current" suit.
+weights   0.8  1.0  1.0  0.0  0.0  0.0
+minStats  20    60    0   20   30   60
+
 suit "Current"
 HEAD LEGEND "*Tusked Allegiance Hood"      2 26  2  2  6 24
 ARMS LEGEND "*Warmind's Avatar Gloves"     2 22 10 16  6 10
 BODY EXOTIC "*Phoenix Protocol"            4  2 29  2 20  8
-LEGS LEGEND "Tusked Allegiance Boots"    16 12  6  2  2 30
+LEGS LEGEND "Tusked Allegiance Boots"     16 12  6  2  2 30
 
 suit "Previous"
 HEAD LEGEND "-Warmind's Avatar Headpiece" 10 14  6 16 10  6
