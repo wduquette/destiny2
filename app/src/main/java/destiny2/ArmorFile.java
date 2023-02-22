@@ -53,7 +53,7 @@ public class ArmorFile {
             if (line.isEmpty() || line.startsWith("#")) {
                 continue;
             }
-            var scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
+            var scanner = new Scanner(line).useDelimiter("\\s+");
 
             if (scanner.hasNext("suit")) {
                 addSuit(parseSuit(line));
@@ -71,11 +71,11 @@ public class ArmorFile {
     // Parses the suit name from the line. The pieces are parsed from the four
     // subsequent lines.
     private Suit parseSuit(String line) {
-        var scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
+        var scanner = new Scanner(line).useDelimiter("\\s+");
 
         var suit = new Suit();
         scanner.next(); // Skip "suit"
-        suit.setName(scanner.next());
+        suit.setName(parseName(scanner));
 
         Type.forEach(type -> suit.put(type, parsePiece(type, reader.next())));
 
@@ -104,12 +104,12 @@ public class ArmorFile {
 
     // Parses the piece of armor from the given line
     private Armor parsePiece(String line) throws AppError {
-        Scanner scanner = new Scanner(line).useDelimiter("\\s*,\\s*");
+        Scanner scanner = new Scanner(line).useDelimiter("\\s+");
 
         try {
             var type = Type.valueOf(scanner.next());
             var rarity = Rarity.valueOf(scanner.next());
-            var name = scanner.next().trim();
+            var name = parseName(scanner).trim();
             var armor = new Armor(type, rarity, name);
 
             Stat.stream().forEach(stat -> armor.put(stat, scanner.nextInt()));
@@ -119,6 +119,14 @@ public class ArmorFile {
         }
     }
 
+    // A name is DOUBLE_QUOTE text DOUBLE_QUOTE
+    private String parseName(Scanner scanner) {
+        scanner.skip("\\s*\"");
+
+        var name = scanner.findInLine("[^\"]+");
+        scanner.skip("\"");
+        return name;
+    }
 
     //-------------------------------------------------------------------------
     // Public API

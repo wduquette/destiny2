@@ -1,45 +1,45 @@
 # Solar Warlock Armor
-suit, Current
-HEAD, LEGEND, *Tusked Allegiance Hood,      2, 26,  2,  2,  6, 24
-ARMS, LEGEND, *Warmind's Avatar Gloves,     2, 22, 10, 16,  6, 10
-BODY, EXOTIC, *Phoenix Protocol,            4,  2, 29,  2, 20,  8
-LEGS, LEGEND, *Tusked Allegiance Boots,    16, 12,  6,  2,  2, 30
+suit "Current"
+HEAD LEGEND "*Tusked Allegiance Hood"      2 26  2  2  6 24
+ARMS LEGEND "*Warmind's Avatar Gloves"     2 22 10 16  6 10
+BODY EXOTIC "*Phoenix Protocol"            4  2 29  2 20  8
+LEGS LEGEND "Tusked Allegiance Boots"    16 12  6  2  2 30
 
-suit, Previous
-HEAD, LEGEND, -Warmind's Avatar Headpiece, 10, 14,  6, 16, 10,  6
-ARMS, LEGEND, *Warmind's Avatar Gloves,     2, 22, 10, 16,  6, 10
-BODY, EXOTIC, *Phoenix Protocol,            4,  2, 29,  2, 20,  8
-LEGS, LEGEND, -Warmind's Avatar Pants,     10, 22,  2, 10, 10, 10
+suit "Previous"
+HEAD LEGEND "-Warmind's Avatar Headpiece" 10 14  6 16 10  6
+ARMS LEGEND "*Warmind's Avatar Gloves"     2 22 10 16  6 10
+BODY EXOTIC "*Phoenix Protocol"            4  2 29  2 20  8
+LEGS LEGEND "-Warmind's Avatar Pants"     10 22  2 10 10 10
 
 # Exotics being considered
-BODY, EXOTIC, *Phoenix Protocol,            4,  2, 29,  2, 20,  8
-BODY, EXOTIC, Phoenix Protocol,            20,  8,  7, 11, 15,  2
+BODY EXOTIC "*Phoenix Protocol"            4  2 29  2 20  8
+BODY EXOTIC "Phoenix Protocol"            20  8  7 11 15  2
 
 # In Vault
-HEAD, LEGEND, *Tusked Allegiance Hood,      2, 26,  2,  2,  6, 24
-ARMS, LEGEND, *Warmind's Avatar Gloves,     2, 22, 10, 16,  6, 10
-LEGS, LEGEND, *Tusked Allegiance Boots,    16, 12,  6,  2,  2, 30
-HEAD, LEGEND, -Warmind's Avatar Headpiece, 10, 14,  6, 16, 10,  6
-LEGS, LEGEND, -Warmind's Avatar Pants,     10, 22,  2, 10, 10, 10
-HEAD, LEGEND, Iron Companion Hood,          6,  2, 24, 21,  7,  2
-HEAD, LEGEND, Reverie Dawn Hood,            2, 12, 14, 14, 22,  4
-HEAD, LEGEND, Tusked Allegiance Hood,      20,  9,  2,  2,  2, 29
-HEAD, LEGEND, Warmind's Avatar Headpiece,   2, 16, 16,  2, 24,  7
-ARMS, LEGEND, Eidolon Pursuant Gloves,      2, 20, 12,  2,  6, 24
-ARMS, LEGEND, Iron Companion Gloves,        7,  2, 22,  2,  6, 25
-ARMS, LEGEND, Ketchkiller's Gloves,        14, 15,  2, 14, 15,  2
-ARMS, LEGEND, Reverie Dawn Gloves,          2, 12, 12, 12, 20,  2
-ARMS, LEGEND, Tusked Allegiance Gloves,     9,  2, 21,  2,  9, 22
-ARMS, LEGEND, Tusked Allegiance Gloves,    13,  2, 16,  6,  2, 26
-ARMS, LEGEND, Tusked Allegiance Gloves,    16, 14,  2, 16,  2, 13
-ARMS, LEGEND, Warmind's Avatar Gloves,      2,  9, 21, 16,  2, 12
-ARMS, LEGEND, Warmind's Avatar Gloves,      2, 27,  2, 19,  6,  7
-ARMS, LEGEND, Warmind's Avatar Gloves,     16,  6,  9, 24,  6,  2
-LEGS, LEGEND, Eidolon Pursuant Pants,      16,  9,  8,  2, 16, 16
-LEGS, LEGEND, Ketchkiller's Boots,         24,  2,  6, 22,  2,  7
-LEGS, LEGEND, Reverie Dawn Boots,           2, 12, 17, 12, 20,  2
-LEGS, LEGEND, Tusked Allegiance Boots,      2,  2, 28,  6,  2, 24
-LEGS, LEGEND, Tusked Allegiance Boots,      2,  2, 29, 27,  2,  2
-LEGS, LEGEND, Tusked Allegiance Boots,      7, 23,  2,  2, 24,  7
-LEGS, LEGEND, Warmind's Avatar Pants,       2,  8, 23, 16,  2, 15
-LEGS, LEGEND, Warmind's Avatar Pants,       2, 20, 10,  2, 30,  2
+HEAD LEGEND "*Tusked Allegiance Hood"      2 26  2  2  6 24
+ARMS LEGEND "*Warmind's Avatar Gloves"     2 22 10 16  6 10
+LEGS LEGEND "*Tusked Allegiance Boots"    16 12  6  2  2 30
+HEAD LEGEND "-Warmind's Avatar Headpiece" 10 14  6 16 10  6
+LEGS LEGEND "-Warmind's Avatar Pants"     10 22  2 10 10 10
+HEAD LEGEND "Iron Companion Hood"          6  2 24 21  7  2
+HEAD LEGEND "Reverie Dawn Hood"            2 12 14 14 22  4
+HEAD LEGEND "Tusked Allegiance Hood"      20  9  2  2  2 29
+HEAD LEGEND "Warmind's Avatar Headpiece"   2 16 16  2 24  7
+ARMS LEGEND "Eidolon Pursuant Gloves"      2 20 12  2  6 24
+ARMS LEGEND "Iron Companion Gloves"        7  2 22  2  6 25
+ARMS LEGEND "Ketchkiller's Gloves"        14 15  2 14 15  2
+ARMS LEGEND "Reverie Dawn Gloves"          2 12 12 12 20  2
+ARMS LEGEND "Tusked Allegiance Gloves"     9  2 21  2  9 22
+ARMS LEGEND "Tusked Allegiance Gloves"    13  2 16  6  2 26
+ARMS LEGEND "Tusked Allegiance Gloves"    16 14  2 16  2 13
+ARMS LEGEND "Warmind's Avatar Gloves"      2  9 21 16  2 12
+ARMS LEGEND "Warmind's Avatar Gloves"      2 27  2 19  6  7
+ARMS LEGEND "Warmind's Avatar Gloves"     16  6  9 24  6  2
+LEGS LEGEND "Eidolon Pursuant Pants"      16  9  8  2 16 16
+LEGS LEGEND "Ketchkiller's Boots"         24  2  6 22  2  7
+LEGS LEGEND "Reverie Dawn Boots"           2 12 17 12 20  2
+LEGS LEGEND "Tusked Allegiance Boots"      2  2 28  6  2 24
+LEGS LEGEND "Tusked Allegiance Boots"      2  2 29 27  2  2
+LEGS LEGEND "Tusked Allegiance Boots"      7 23  2  2 24  7
+LEGS LEGEND "Warmind's Avatar Pants"       2  8 23 16  2 15
+LEGS LEGEND "Warmind's Avatar Pants"       2 20 10  2 30  2
