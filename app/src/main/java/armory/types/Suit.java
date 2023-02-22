@@ -18,6 +18,13 @@ public class Suit extends HashMap<Type, Armor> implements StatInfo {
         Type.forEach(t -> put(t, new Armor(t, Rarity.LEGEND, "none")));
     }
 
+    public Suit(Armor head, Armor arms, Armor body, Armor legs) {
+        put(Type.HEAD, head);
+        put(Type.ARMS, arms);
+        put(Type.BODY, body);
+        put(Type.LEGS, legs);
+    }
+
     //------------------------------------------------------------------------
     // Suit API
 

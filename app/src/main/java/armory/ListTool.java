@@ -45,7 +45,7 @@ Outputs a list of the armor pieces defined in the armory file.
         var fileName = args.poll();
 
         // FIRST, load the armor from the file.
-        var db = new ArmorFile(new File(fileName));
+        var db = new Armory(new File(fileName));
 
         System.out.println("\nPieces from " + fileName + ":\n");
         db.getPieces().forEach(p -> System.out.println(p.data()));

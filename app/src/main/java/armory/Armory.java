@@ -1,83 +1,182 @@
 package armory;
 
-import armory.types.Armor;
-import armory.types.Suit;
-import armory.types.Type;
+import armory.types.*;
+import armory.util.LineReader;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
- * A collection of armor, by type.
+ * Armor File parser
  */
-@SuppressWarnings("unused")
-public class Armory extends HashMap<Type, List<Armor>> {
-    /**
-     * Creates a new armory out of the given pieces
-     * @param pieces The pieces of armor.
-     */
-    public Armory(List<Armor> pieces) {
-        pieces.forEach(piece -> {
-            putIfAbsent(piece.type(), new ArrayList<>());
-            get(piece.type()).add(piece);
-        });
-    }
+public class Armory {
+    //-------------------------------------------------------------------------
+    // Instance Variables
+
+    // A reader for the lines in the file.
+    transient private LineReader reader;
+
+    // The complete suits of armor loaded from the file
+    private final List<Suit> suits = new ArrayList<>();
+
+    // The pieces of armor loaded from the file.
+    private final List<Armor> pieces = new ArrayList<>();
+
+    // The line number for each piece of armor.
+    private final Map<Armor,Integer> piece2line = new HashMap<>();
+
+    //-------------------------------------------------------------------------
+    // Constructor
 
     /**
-     * Get the number of pieces of the given type in the armory
-     * @param type The type
-     * @return The number of pieces.
+     * Parses the file
+     * @param armorFile The armor file
+     * @throws AppError On input error
      */
-    public int size(Type type) {
-        return get(type).size();
+    public Armory(File armorFile) throws AppError {
+        try {
+            reader = new LineReader(armorFile);
+
+            parseFile();
+        } catch (IOException ex) {
+            throw new AppError("I/O Error reading data: " + ex.getMessage());
+        } finally {
+            reader = null;
+        }
     }
 
-    /**
-     * Gets the indicated piece of the given type.
-     * @param type The type
-     * @param index The index of the piece
-     * @return The piece
-     */
-    public Armor get(Type type, int index) {
-        return get(type).get(index);
+    //-------------------------------------------------------------------------
+    // The parser
+
+    private void parseFile() throws AppError {
+        while (!reader.isEmpty()) {
+            var line = reader.next().trim();
+
+            if (line.isEmpty() || line.startsWith("#")) {
+                continue;
+            }
+            var scanner = new Scanner(line).useDelimiter("\\s+");
+
+            if (scanner.hasNext("suit")) {
+                addSuit(parseSuit(line));
+                reader.next();  // For now, skip it.
+            } else {
+                addPiece(parsePiece(line));
+            }
+        }
     }
 
-    /**
-     * Make the suit for the indicated pieces of armor
-     * @param head Index of the head piece
-     * @param arms Index of the arms piece
-     * @param body Index of the body piece
-     * @param legs Index of the legs piece
-     * @return The suit
-     */
-    public Suit makeSuit(int head, int arms, int body, int legs) {
+    private void addSuit(Suit suit) {
+        suits.add(suit);
+    }
+
+    // Parses the suit name from the line. The pieces are parsed from the four
+    // subsequent lines.
+    private Suit parseSuit(String line) {
+        var scanner = new Scanner(line).useDelimiter("\\s+");
+
         var suit = new Suit();
+        scanner.next(); // Skip "suit"
+        suit.setName(parseName(scanner));
 
-        suit.put(Type.HEAD, get(Type.HEAD).get(head));
-        suit.put(Type.ARMS, get(Type.ARMS).get(arms));
-        suit.put(Type.BODY, get(Type.BODY).get(body));
-        suit.put(Type.LEGS, get(Type.LEGS).get(legs));
+        Type.forEach(type -> suit.put(type, parsePiece(type, reader.next())));
 
         return suit;
     }
 
+
+    // Adds the piece of armor to the list, remembering its line number.
+    private void addPiece(Armor piece) {
+        if (!pieces.contains(piece)) {
+            pieces.add(piece);
+            piece2line.put(piece, reader.lineNumber());
+        }
+    }
+
+    private Armor parsePiece(Type type, String line) {
+        var piece = parsePiece(line);
+
+        if (piece.type() != type) {
+            throw new AppError("Expected " + type + " at line " +
+                reader.lineNumber());
+        }
+
+        return piece;
+    }
+
+    // Parses the piece of armor from the given line
+    private Armor parsePiece(String line) throws AppError {
+        Scanner scanner = new Scanner(line).useDelimiter("\\s+");
+
+        try {
+            var type = Type.valueOf(scanner.next());
+            var rarity = Rarity.valueOf(scanner.next());
+            var name = parseName(scanner).trim();
+            var armor = new Armor(type, rarity, name);
+
+            Stat.stream().forEach(stat -> armor.put(stat, scanner.nextInt()));
+            return armor;
+        } catch (Exception ex) {
+            throw new AppError("Line " + reader.lineNumber() + ", " + ex.getMessage());
+        }
+    }
+
+    // A name is DOUBLE_QUOTE text DOUBLE_QUOTE
+    private String parseName(Scanner scanner) {
+        scanner.skip("\\s*\"");
+
+        var name = scanner.findInLine("[^\"]+");
+        scanner.skip("\"");
+        return name;
+    }
+
+    //-------------------------------------------------------------------------
+    // Public API
+
     /**
-     * Gets all valid suits of armor for the pieces in this armory.
-     * @return The list of suits.
+     * Gets the list of armor pieces read from the file.
+     * @return The list
      */
-    public List<Suit> allSuits() {
+    public List<Armor> getPieces() {
+        return pieces;
+    }
+
+    /**
+     * Gets the list of predefined suits read from the file.
+     * @return The list
+     */
+    public List<Suit> getSuits() {
+        return suits;
+    }
+
+    /**
+     * Gets the line number of the piece of armor in the file, or -1 if
+     * the armor was not found.
+     * @param piece The piece of armor
+     * @return The line number, 1 to N, or -1 if not found.
+     */
+    @SuppressWarnings("unused")
+    public int getLineNumber(Armor piece) {
+        return piece2line.getOrDefault(piece, -1);
+    }
+
+    public static List<Suit> makeSuits(List<Armor> pieces) {
+        // FIRST, build the lists of armor by types.
+        var typeLists = new HashMap<Type,List<Armor>>();
+
+        pieces.forEach(piece -> {
+            typeLists.putIfAbsent(piece.type(), new ArrayList<>());
+            typeLists.get(piece.type()).add(piece);
+        });
+
         var result = new ArrayList<Suit>();
 
-        // Is there a cleaner, more concise way to do this?
-        for (var head = 0; head < size(Type.HEAD); head++) {
-            for (var arms = 0; arms < size(Type.ARMS); arms++) {
-                for (var body = 0; body < size(Type.BODY); body++) {
-                    for (var legs = 0; legs < size(Type.LEGS); legs++) {
-                        // If there are two or more exotics, it isn't a valid
-                        // suit
-                        var suit = makeSuit(head, arms, body, legs);
-
+        for (var head : typeLists.get(Type.HEAD)) {
+            for (var arms : typeLists.get(Type.ARMS)) {
+                for (var body : typeLists.get(Type.BODY)) {
+                    for (var legs : typeLists.get(Type.LEGS)) {
+                        var suit = new Suit(head, arms, body, legs);
                         var numberOfExotics = suit.values().stream()
                             .filter(Armor::isExotic)
                             .count();
@@ -93,4 +192,11 @@ public class Armory extends HashMap<Type, List<Armor>> {
         return result;
     }
 
+    /**
+     * Generates all suits made from the known pieces of armor
+     * @return The suits
+     */
+    public List<Suit> allSuits() {
+        return makeSuits(pieces);
+    }
 }
