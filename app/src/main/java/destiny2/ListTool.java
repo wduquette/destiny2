@@ -18,7 +18,7 @@ public class ListTool implements Tool {
     // Application Code
 
     public String usage() {
-        return "armor list <armorFile.dat>";
+        return "armory list <armory.dat>";
     }
 
     public String help() {

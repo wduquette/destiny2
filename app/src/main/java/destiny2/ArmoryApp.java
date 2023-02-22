@@ -7,7 +7,7 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Map;
 
-public class ArmorApp {
+public class ArmoryApp {
     //-------------------------------------------------------------------------
     // Instance variables
 
@@ -57,7 +57,7 @@ public class ArmorApp {
     // Main
     public static void main(String[] args) {
         try {
-            new ArmorApp().app(args);
+            new ArmoryApp().app(args);
         } catch (AppError ex) {
             System.out.println("Error: " + ex.getMessage());
 //            ex.printStackTrace(System.out);

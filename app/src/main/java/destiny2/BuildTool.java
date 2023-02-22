@@ -22,7 +22,7 @@ public class BuildTool implements Tool {
 
     @Override
     public String usage() {
-        return "armor build <armorFile.dat> [options...]";
+        return "armory build <armory.dat> [options...]";
     }
 
     @Override
