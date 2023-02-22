@@ -101,6 +101,7 @@ read from the armory file; if not in the armory file, they default to
         Suit current;
 
         if (compareWith != null) {
+            // TODO Can check compareWith when parsing options
             current = armory.getSuits().stream()
                 .filter(suit -> suit.getName().equals(compareWith))
                 .findFirst()
@@ -119,7 +120,7 @@ read from the armory file; if not in the armory file, they default to
 
         println("Number of possible suits:  " + suits.size());
         println("Possible suits ordered by: " + comparator);
-        println("Minimum acceptable stats: " + minStats);
+        println("Minimum acceptable stats: " + minStats.numbers());
         println("Comparing against suit:    " +
             (current != null ? current.getName() : "n/a"));
         println("");
@@ -129,18 +130,23 @@ read from the armory file; if not in the armory file, they default to
             .limit(limit)
             .toList();
 
-        for (int i = 0; i < results.size(); i++) {
-            results.get(i).setName("Choice #" + (i + 1));
-        }
-
-        results.forEach(set -> {
-            if (current !=  null) {
-                set.dumpComparison(current);
-            } else {
-                set.dump();
+        if (results.isEmpty()) {
+            println("No acceptable suits found.");
+        } else {
+            for (int i = 0; i < results.size(); i++) {
+                results.get(i).setName("Choice #" + (i + 1));
             }
-            println("");
-        });
+
+
+            results.forEach(set -> {
+                if (current != null) {
+                    set.dumpComparison(current);
+                } else {
+                    set.dump();
+                }
+                println("");
+            });
+        }
     }
 
     /**
