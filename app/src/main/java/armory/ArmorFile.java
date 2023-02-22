@@ -1,4 +1,4 @@
-package destiny2;
+package armory;
 
 import java.io.File;
 import java.io.IOException;

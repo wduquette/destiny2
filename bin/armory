@@ -3,5 +3,5 @@
 export BIN_DIR="$( dirname "${BASH_SOURCE[0]}" )"
 export APP_HOME=${BIN_DIR}/..
 #echo "APP_HOME=$APP_HOME"
-java --class-path=${APP_HOME}/app/build/libs/app.jar destiny2.ArmoryApp $*
+java --class-path=${APP_HOME}/app/build/libs/app.jar armory.ArmoryApp $*
 

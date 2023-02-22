@@ -1,4 +1,4 @@
-package destiny2;
+package armory;
 
 /**
  * Application errors (e.g., input errors) to be reported to the

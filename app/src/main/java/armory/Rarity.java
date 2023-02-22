@@ -1,4 +1,4 @@
-package destiny2;
+package armory;
 
 import java.util.Arrays;
 import java.util.function.Consumer;

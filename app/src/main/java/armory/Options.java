@@ -1,8 +1,6 @@
-package destiny2;
+package armory;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
 
 /**
  * The user's input options.

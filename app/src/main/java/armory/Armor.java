@@ -1,4 +1,4 @@
-package destiny2;
+package armory;
 
 public class Armor extends StatMap {
     private final Type type;
