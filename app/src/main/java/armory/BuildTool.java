@@ -7,6 +7,8 @@ import armory.types.*;
 
 import java.io.File;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A tool for building suits of armor
@@ -30,6 +32,8 @@ public class BuildTool implements Tool {
 
     // Importance weights for each stat
     private StatWeights weights;
+
+    private boolean listUnused = false;
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -60,6 +64,8 @@ read from the armory file; if not in the armory file, they default to
 1.0 and 0 respectively.
 
     -limit num     -- Maximum number of results to display, default is 5
+    -unused        -- List the pieces of armor that aren't used in any
+                      acceptable suit of armor
     -mob weight    -- The weight to put on the given stat.
     -res weight
     -rec weight
@@ -125,6 +131,7 @@ read from the armory file; if not in the armory file, they default to
             (current != null ? current.getName() : "n/a"));
         println("");
 
+        // NEXT, get and display the results
         var results = suits.stream()
             .filter(set -> set.dominates(minStats))
             .limit(limit)
@@ -137,7 +144,6 @@ read from the armory file; if not in the armory file, they default to
                 results.get(i).setName("Choice #" + (i + 1));
             }
 
-
             results.forEach(set -> {
                 if (current != null) {
                     set.dumpComparison(current);
@@ -146,6 +152,27 @@ read from the armory file; if not in the armory file, they default to
                 }
                 println("");
             });
+        }
+
+        // NEXT, build a set of pieces of armor that are not used in any
+        // acceptable suit of armor.
+        if (listUnused) {
+            final var used = new HashSet<Armor>();
+
+            results.forEach(suit -> used.addAll(suit.values()));
+
+            var unused = armory.getPieces().stream()
+                .filter(a -> !used.contains(a))
+                .toList();
+
+            if (!unused.isEmpty()) {
+                println();
+                println("The following pieces of armor are not used in any acceptable");
+                println("suit of armor according to the current criteria.");
+                println();
+
+                unused.forEach(a -> println(a.data()));
+            }
         }
     }
 
@@ -167,6 +194,8 @@ read from the armory file; if not in the armory file, they default to
                     limit = requirePositiveInteger(opt, opts);
                 case "-compare" ->
                     compareWith = requireString(opt, opts);
+                case "-unused" ->
+                    listUnused = true;
                 case "-mob" ->
                     weights.put(Stat.MOB, requireWeight(opt, opts));
                 case "-res" ->
