@@ -205,7 +205,7 @@ public class Armory {
         return piece2line.getOrDefault(piece, -1);
     }
 
-    public static List<Suit> makeSuits(List<Armor> pieces) {
+    public static Map<Type,List<Armor>> getTypeLists(List<Armor> pieces) {
         // FIRST, build the lists of armor by types.
         var typeLists = new HashMap<Type,List<Armor>>();
 
@@ -214,6 +214,11 @@ public class Armory {
             typeLists.get(piece.type()).add(piece);
         });
 
+        return typeLists;
+    }
+
+    public static List<Suit> makeSuits(List<Armor> pieces) {
+        var typeLists = getTypeLists(pieces);
         var result = new ArrayList<Suit>();
 
         for (var head : typeLists.get(Type.HEAD)) {
