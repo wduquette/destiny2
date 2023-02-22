@@ -20,13 +20,15 @@ public class BuildTool implements Tool {
     //-------------------------------------------------------------------------
     // The App
 
-    @Override
-    public String usage() {
+    @Override public String usage() {
         return "armory build <armory.dat> [options...]";
     }
 
-    @Override
-    public String help() {
+    @Override public String oneLiner() {
+        return "Builds suits of armor from the available pieces.";
+    }
+
+    @Override public String help() {
         return """
 This tool builds possible suits of armor from the available pieces,
 and ranks them according to the user's criteria.  All suits must

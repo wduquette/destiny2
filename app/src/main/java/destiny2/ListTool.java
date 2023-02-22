@@ -17,13 +17,17 @@ public class ListTool implements Tool {
     //-------------------------------------------------------------------------
     // Application Code
 
-    public String usage() {
+    @Override public String usage() {
         return "armory list <armory.dat>";
     }
 
-    public String help() {
+    @Override public String oneLiner() {
+        return "Lists the available pieces of armor.";
+    }
+
+    @Override public String help() {
         return """
-Outputs a list of the armor pieces defined in the file.
+Outputs a list of the armor pieces defined in the armory file.
 """;
     }
 

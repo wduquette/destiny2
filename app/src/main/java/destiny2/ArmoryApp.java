@@ -11,9 +11,10 @@ public class ArmoryApp {
     //-------------------------------------------------------------------------
     // Instance variables
 
-    public final Map<String, Tool> tools = Map.of(
+    public final static Map<String, Tool> TOOLS = Map.of(
         "list", new ListTool(),
-        "build", new BuildTool()
+        "build", new BuildTool(),
+        "help", new HelpTool()
     );
 
     //-------------------------------------------------------------------------
@@ -27,19 +28,19 @@ public class ArmoryApp {
         var args = new ArrayDeque<>(List.of(argsArray));
 
         if (args.isEmpty()) {
-            println("Usage: armor <subcommand> [<arguments...>]");
+            println("Usage: armory <subcommand> [<arguments...>]");
             println("");
-            println("Run \"armor help\" for a list of subcommands.");
+            println("Run \"armory help\" for a list of subcommands.");
             System.exit(1);
         }
 
         var subcommand = args.poll();
-        var tool = tools.get(subcommand);
+        var tool = TOOLS.get(subcommand);
 
         if (tool == null) {
             println("Error, unrecognized subcommand: \"" + subcommand + "\"");
             println("");
-            println("Run \"armor help\" for a list of subcommands.");
+            println("Run \"armory help\" for a list of subcommands.");
             System.exit(1);
         }
 
