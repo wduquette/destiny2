@@ -1,5 +1,10 @@
 package armory;
 
+import armory.types.AppError;
+import armory.types.Stat;
+import armory.types.StatMap;
+import armory.types.StatWeights;
+
 import java.util.Deque;
 
 /**

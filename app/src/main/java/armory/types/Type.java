@@ -1,4 +1,4 @@
-package armory;
+package armory.types;
 
 import java.util.Arrays;
 import java.util.function.Consumer;

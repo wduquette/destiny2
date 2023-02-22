@@ -1,5 +1,9 @@
 package armory;
 
+import armory.types.Armor;
+import armory.types.Suit;
+import armory.types.Type;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

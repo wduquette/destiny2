@@ -1,5 +1,7 @@
 package armory;
 
+import armory.types.AppError;
+
 import java.util.Deque;
 
 /**

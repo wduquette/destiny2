@@ -1,4 +1,4 @@
-package armory;
+package armory.types;
 
 import java.util.ArrayList;
 import java.util.Comparator;

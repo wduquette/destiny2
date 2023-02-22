@@ -1,11 +1,11 @@
-package armory;
+package armory.types;
 
 import java.util.HashMap;
 
 /**
  * A complete suit of armor: HEAD, ARMS, BODY, LEGS.
  */
-public class Suit extends HashMap<Type,Armor> implements StatInfo {
+public class Suit extends HashMap<Type, Armor> implements StatInfo {
     //------------------------------------------------------------------------
     // Instance Variables
 

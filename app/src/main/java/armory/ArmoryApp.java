@@ -3,6 +3,8 @@
  */
 package armory;
 
+import armory.types.AppError;
+
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Map;

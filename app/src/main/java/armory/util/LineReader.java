@@ -1,4 +1,4 @@
-package armory;
+package armory.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,7 @@ import java.util.*;
 /**
  * Armor File parser
  */
+@SuppressWarnings("unused")
 public class LineReader {
     //-------------------------------------------------------------------------
     // Instance Variables
@@ -24,7 +25,6 @@ public class LineReader {
     /**
      * Breaks the file into lines, to be read one at a time.
      * @param file The file
-     * @throws AppError On input error
      */
     public LineReader(File file) throws IOException {
         lines = new ArrayDeque<>(Files.lines(file.toPath()).toList());

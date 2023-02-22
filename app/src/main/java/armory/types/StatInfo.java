@@ -1,4 +1,4 @@
-package armory;
+package armory.types;
 
 public interface StatInfo {
     /**

@@ -3,6 +3,10 @@
  */
 package armory;
 
+import armory.types.AppError;
+import armory.types.Suit;
+import armory.types.SuitComparator;
+
 import java.io.File;
 import java.util.Deque;
 

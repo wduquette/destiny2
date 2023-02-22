@@ -1,4 +1,4 @@
-package armory;
+package armory.types;
 
 public class Armor extends StatMap {
     private final Type type;
