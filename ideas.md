@@ -2,9 +2,11 @@
 
 - Define default options in armor file.
 - Actions
-  - `armor items [type]`: List available pieces of armor
-  - `suits [name]`: List defined suits
-  - `armor analyze`: Analyze possible suits
+  - List available pieces of armor
+  - List defined suits
+  - Analyze possible suits
+  - Determine which (if any) pieces of armor can be discarded.
+    - Doesn't contribute to any suit that meets the minimums. 
 
 ## Needs
 

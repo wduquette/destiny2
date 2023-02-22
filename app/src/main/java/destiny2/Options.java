@@ -8,7 +8,6 @@ import java.util.List;
  * The user's input options.
  */
 public class Options {
-    private final String fileName;
     private String compareWith = null;
     private int limit = 5;
     private final StatMap mins = new StatMap();
@@ -16,14 +15,10 @@ public class Options {
 
     /**
      * Parses the options and makes them available to the application.
-     * @param args The command line arguments.
+     * @param opts The command line options
      * @throws AppError On input error
      */
-    public Options(String[] args) throws AppError {
-        var opts = new ArrayDeque<>(List.of(args));
-
-        this.fileName = opts.poll();
-
+    public Options(Deque<String> opts) throws AppError {
         while (!opts.isEmpty()) {
             var opt = opts.poll();
 
@@ -64,15 +59,6 @@ public class Options {
                     throw new AppError("Unknown option: " + opt);
             }
         }
-    }
-
-    /**
-     * Gets the armor data file's name, relative to the current working
-     * directory.
-     * @return The name
-     */
-    public String getFileName() {
-        return fileName;
     }
 
     /**

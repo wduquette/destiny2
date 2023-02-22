@@ -3,104 +3,47 @@
  */
 package destiny2;
 
-import java.io.File;
+import java.util.ArrayDeque;
+import java.util.List;
+import java.util.Map;
 
 public class ArmorApp {
     //-------------------------------------------------------------------------
     // Instance variables
 
-    // The data loaded from the armor file.
-    private ArmorFile db;
+    public final Map<String, Tool> tools = Map.of(
+        "list", new ListTool(),
+        "build", new BuildTool()
+    );
 
     //-------------------------------------------------------------------------
     // The App
 
-    public void app(String[] args) {
-        if (args.length == 0) {
-            println("""
-            Usage: armor armor.dat [options...]
-                
-                -limit num     -- Maximum number of results to display, default is 5
-                -mob weight    -- default is 1.0 for each
-                -res weight
-                -rec weight
-                -dis weight
-                -int weight
-                -str weight
-                -minmob value  -- Minimum stat, default is 0
-                -minres value  -- Minimum stat, default is 0
-                -minrec value  -- Minimum stat, default is 0
-                -mindis value  -- Minimum stat, default is 0
-                -minint value  -- Minimum stat, default is 0
-                -minstr value  -- Minimum stat, default is 0
-            """);
+    /**
+     * Gets the desired tool and executes it
+     * @param argsArray The arguments from the command line.
+     */
+    public void app(String[] argsArray) {
+        var args = new ArrayDeque<>(List.of(argsArray));
+
+        if (args.isEmpty()) {
+            println("Usage: armor <subcommand> [<arguments...>]");
+            println("");
+            println("Run \"armor help\" for a list of subcommands.");
             System.exit(1);
         }
 
-        // NEXT, where are we?
-        println("In: " + System.getProperty("user.dir"));
+        var subcommand = args.poll();
+        var tool = tools.get(subcommand);
 
-        // NEXT, parse the arguments
-        var options = new Options(args);
-
-        // FIRST, load the armor from the file.
-        db = new ArmorFile(new File(options.getFileName()));
-
-        println("\nPieces from " + options.getFileName() + ":\n");
-        db.getPieces().forEach(p ->
-            System.out.printf("%04d %s\n", db.getLineNumber(p), p.data()));
-
-        println("\nSuits from " + options.getFileName() + ":\n");
-        db.getSuits().forEach(s -> {
-            s.dump();
+        if (tool == null) {
+            println("Error, unrecognized subcommand: \"" + subcommand + "\"");
             println("");
-        });
-
-        // NEXT, get the suit to compare with.
-        Suit current;
-
-        if (options.getCompareWith() != null) {
-            current = db.getSuits().stream()
-                .filter(suit -> suit.getName().equals(options.getCompareWith()))
-                .findFirst()
-                .orElseThrow(() ->
-                    new AppError("Unknown suit: " + options.getCompareWith()));
-        } else {
-            current = (!db.getSuits().isEmpty()) ? db.getSuits().get(0) : null;
+            println("Run \"armor help\" for a list of subcommands.");
+            System.exit(1);
         }
 
-        // NEXT, generate the possible choices
-        var suits = new Armory(db.getPieces()).allSuits();
-
-        var comparator = new SuitComparator(options.getWeights());
-        var mins = options.getMins();
-
-        suits.sort(comparator.reversed());
-
-        println("Number of possible suits:  " + suits.size());
-        println("Possible suits ordered by: " + comparator);
-        println("Minimum acceptable stats: " + mins.numbers());
-        println("Comparing against suit:    " +
-            (current != null ? current.getName() : "n/a"));
-        println("");
-
-        var results = suits.stream()
-            .filter(set -> set.dominates(mins))
-            .limit(options.getLimit())
-            .toList();
-
-        for (int i = 0; i < results.size(); i++) {
-            results.get(i).setName("Choice #" + (i + 1));
-        }
-
-        results.forEach(set -> {
-            if (current !=  null) {
-                set.dumpComparison(current);
-            } else {
-                set.dump();
-            }
-            println("");
-        });
+        tool.start(args);
     }
 
     //-------------------------------------------------------------------------
@@ -119,7 +62,7 @@ public class ArmorApp {
             System.out.println("Error: " + ex.getMessage());
 //            ex.printStackTrace(System.out);
         } catch (Exception ex) {
-            System.out.println("Unexpected Exception: " + ex.getMessage());
+            System.out.println("Unexpected Exception Thrown: " + ex.getMessage());
             ex.printStackTrace(System.out);
         }
     }
