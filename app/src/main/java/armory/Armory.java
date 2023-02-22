@@ -26,6 +26,12 @@ public class Armory {
     // The line number for each piece of armor.
     private final Map<Armor,Integer> piece2line = new HashMap<>();
 
+    // The minimum acceptable stats
+    private final StatMap minStats = new StatMap();
+
+    // The user's weights for each stat.
+    private final StatWeights weights = new StatWeights();
+
     //-------------------------------------------------------------------------
     // Constructor
 
@@ -198,5 +204,23 @@ public class Armory {
      */
     public List<Suit> allSuits() {
         return makeSuits(pieces);
+    }
+
+    /**
+     * The minimum acceptable values for each state, as defined in the
+     * armory file. Defaults to 0 for each stat if not set.
+     * @return the minimum stats
+     */
+    public StatMap getMinStats() {
+        return minStats;
+    }
+
+    /**
+     * The weights placed on each stat in the armory file.
+     * Defaults to 1.0 for each stat if not set.
+     * @return the weights
+     */
+    public StatWeights getWeights() {
+        return weights;
     }
 }

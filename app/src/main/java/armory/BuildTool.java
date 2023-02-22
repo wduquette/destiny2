@@ -13,6 +13,25 @@ import java.util.Deque;
  */
 public class BuildTool implements Tool {
     //-------------------------------------------------------------------------
+    // Instance Variables
+
+    //
+    // Option Values
+    //
+
+    // The maximum number of generated suits to display
+    private int limit = 5;
+
+    // The Suit of armor to compare the generated suits with.
+    private String compareWith = null;
+
+    // Minimum acceptable stat values
+    private StatMap minStats;
+
+    // Importance weights for each stat
+    private StatWeights weights;
+
+    //-------------------------------------------------------------------------
     // Constructor
 
     public BuildTool() {
@@ -36,19 +55,23 @@ This tool builds possible suits of armor from the available pieces,
 and ranks them according to the user's criteria.  All suits must
 meet the user's desired minimum stats.
 
+The weight and minimum stat options override the weights and minimums
+read from the armory file; if not in the armory file, they default to
+1.0 and 0 respectively.
+
     -limit num     -- Maximum number of results to display, default is 5
-    -mob weight    -- default is 1.0 for each
+    -mob weight    -- The weight to put on the given stat.
     -res weight
     -rec weight
     -dis weight
     -int weight
     -str weight
-    -minmob value  -- Minimum stat, default is 0
-    -minres value  -- Minimum stat, default is 0
-    -minrec value  -- Minimum stat, default is 0
-    -mindis value  -- Minimum stat, default is 0
-    -minint value  -- Minimum stat, default is 0
-    -minstr value  -- Minimum stat, default is 0
+    -minmob value  -- The minimum acceptable value for the stat
+    -minres value
+    -minrec value
+    -mindis value
+    -minint value
+    -minstr value
 """;
     }
 
@@ -59,15 +82,17 @@ meet the user's desired minimum stats.
             System.exit(1);
         }
 
-        // NEXT, parse the command line
+        // NEXT, get the armory from the file.
         var fileName = args.poll();
-        var options = new Options(args);
+        var armory = new Armory(new File(fileName));
+        minStats = armory.getMinStats();
+        weights = armory.getWeights();
 
-        // FIRST, load the armor from the file.
-        var db = new Armory(new File(fileName));
+        // NEXT, parse the options.
+        parseOptions(args);
 
         println("\nSuits from " + fileName + ":\n");
-        db.getSuits().forEach(s -> {
+        armory.getSuits().forEach(s -> {
             s.dump();
             println("");
         });
@@ -75,34 +100,33 @@ meet the user's desired minimum stats.
         // NEXT, get the suit to compare with.
         Suit current;
 
-        if (options.getCompareWith() != null) {
-            current = db.getSuits().stream()
-                .filter(suit -> suit.getName().equals(options.getCompareWith()))
+        if (compareWith != null) {
+            current = armory.getSuits().stream()
+                .filter(suit -> suit.getName().equals(compareWith))
                 .findFirst()
                 .orElseThrow(() ->
-                    new AppError("Unknown suit: " + options.getCompareWith()));
+                    new AppError("Unknown suit: " + compareWith));
         } else {
-            current = (!db.getSuits().isEmpty()) ? db.getSuits().get(0) : null;
+            current = armory.getSuits().stream().findFirst().orElse(null);
         }
 
         // NEXT, generate the possible choices
-        var suits = db.allSuits();
+        var suits = armory.allSuits();
 
-        var comparator = new SuitComparator(options.getWeights());
-        var mins = options.getMins();
+        var comparator = new SuitComparator(weights);
 
         suits.sort(comparator.reversed());
 
         println("Number of possible suits:  " + suits.size());
         println("Possible suits ordered by: " + comparator);
-        println("Minimum acceptable stats: " + mins.numbers());
+        println("Minimum acceptable stats: " + minStats);
         println("Comparing against suit:    " +
             (current != null ? current.getName() : "n/a"));
         println("");
 
         var results = suits.stream()
-            .filter(set -> set.dominates(mins))
-            .limit(options.getLimit())
+            .filter(set -> set.dominates(minStats))
+            .limit(limit)
             .toList();
 
         for (int i = 0; i < results.size(); i++) {
@@ -120,141 +144,100 @@ meet the user's desired minimum stats.
     }
 
     /**
-     * The user's input options.
+     * Parses the options and makes them available to the application.
+     * @param opts The command line options
+     * @throws AppError On input error
      */
-    public class Options {
-        private String compareWith = null;
-        private int limit = 5;
-        private final StatMap mins = new StatMap();
-        private final StatWeights weights = new StatWeights();
+    void parseOptions(Deque<String> opts) throws AppError {
+        while (!opts.isEmpty()) {
+            var opt = opts.poll();
 
-        /**
-         * Parses the options and makes them available to the application.
-         * @param opts The command line options
-         * @throws AppError On input error
-         */
-        public Options(Deque<String> opts) throws AppError {
-            while (!opts.isEmpty()) {
-                var opt = opts.poll();
-
-                if (!opt.startsWith("-")) {
-                    throw new AppError("Expected an option: " + opt);
-                }
-
-                switch (opt) {
-                    case "-limit" ->
-                        limit = requirePositiveInteger(opt, opts);
-                    case "-compare" ->
-                        compareWith = requireString(opt, opts);
-                    case "-mob" ->
-                        weights.put(Stat.MOB, requireWeight(opt, opts));
-                    case "-res" ->
-                        weights.put(Stat.RES, requireWeight(opt, opts));
-                    case "-rec" ->
-                        weights.put(Stat.REC, requireWeight(opt, opts));
-                    case "-dis" ->
-                        weights.put(Stat.DIS, requireWeight(opt, opts));
-                    case "-int" ->
-                        weights.put(Stat.INT, requireWeight(opt, opts));
-                    case "-str" ->
-                        weights.put(Stat.STR, requireWeight(opt, opts));
-                    case "-minmob" ->
-                        mins.put(Stat.MOB, requirePositiveInteger(opt, opts));
-                    case "-minres" ->
-                        mins.put(Stat.RES, requirePositiveInteger(opt, opts));
-                    case "-minrec" ->
-                        mins.put(Stat.REC, requirePositiveInteger(opt, opts));
-                    case "-mindis" ->
-                        mins.put(Stat.DIS, requirePositiveInteger(opt, opts));
-                    case "-minint" ->
-                        mins.put(Stat.INT, requirePositiveInteger(opt, opts));
-                    case "-minstr" ->
-                        mins.put(Stat.STR, requirePositiveInteger(opt, opts));
-                    default ->
-                        throw new AppError("Unknown option: " + opt);
-                }
-            }
-        }
-
-        /**
-         * Gets the maximum number of possible armor sets to list.
-         * @return The number
-         */
-        public int getLimit() {
-            return limit;
-        }
-
-        /**
-         * Gets the name of the armor set to compare with.
-         * @return The set.
-         */
-        public String getCompareWith() {
-            return compareWith;
-        }
-
-        /**
-         * Gets the minimum acceptable value for each stat.
-         * @return The minimums
-         */
-        public StatMap getMins() {
-            return mins;
-        }
-
-        /**
-         * Gets a weights to use when ordering the armor sets.
-         * @return The weights
-         */
-        public StatWeights getWeights() {
-            return weights;
-        }
-
-        //-------------------------------------------------------------------------
-        // Helpers
-
-        private String requireString(String opt, Deque<String> opts)
-            throws AppError
-        {
-            if (opts.isEmpty()) {
-                throw new AppError("Missing value for " + opt);
+            if (!opt.startsWith("-")) {
+                throw new AppError("Expected an option: " + opt);
             }
 
-            return opts.poll();
+            switch (opt) {
+                case "-limit" ->
+                    limit = requirePositiveInteger(opt, opts);
+                case "-compare" ->
+                    compareWith = requireString(opt, opts);
+                case "-mob" ->
+                    weights.put(Stat.MOB, requireWeight(opt, opts));
+                case "-res" ->
+                    weights.put(Stat.RES, requireWeight(opt, opts));
+                case "-rec" ->
+                    weights.put(Stat.REC, requireWeight(opt, opts));
+                case "-dis" ->
+                    weights.put(Stat.DIS, requireWeight(opt, opts));
+                case "-int" ->
+                    weights.put(Stat.INT, requireWeight(opt, opts));
+                case "-str" ->
+                    weights.put(Stat.STR, requireWeight(opt, opts));
+                case "-minmob" ->
+                    minStats.put(Stat.MOB, requirePositiveInteger(opt, opts));
+                case "-minres" ->
+                    minStats.put(Stat.RES, requirePositiveInteger(opt, opts));
+                case "-minrec" ->
+                    minStats.put(Stat.REC, requirePositiveInteger(opt, opts));
+                case "-mindis" ->
+                    minStats.put(Stat.DIS, requirePositiveInteger(opt, opts));
+                case "-minint" ->
+                    minStats.put(Stat.INT, requirePositiveInteger(opt, opts));
+                case "-minstr" ->
+                    minStats.put(Stat.STR, requirePositiveInteger(opt, opts));
+                default ->
+                    throw new AppError("Unknown option: " + opt);
+            }
+        }
+    }
+
+
+    //-------------------------------------------------------------------------
+    // Helpers
+
+    private String requireString(String opt, Deque<String> opts)
+        throws AppError
+    {
+        if (opts.isEmpty()) {
+            throw new AppError("Missing value for " + opt);
         }
 
-        private int requirePositiveInteger(String opt, Deque<String> opts)
-            throws AppError
-        {
-            var valueString = requireString(opt, opts);
+        return opts.poll();
+    }
 
-            try {
-                var value = Integer.parseInt(valueString);
+    private int requirePositiveInteger(String opt, Deque<String> opts)
+        throws AppError
+    {
+        var valueString = requireString(opt, opts);
 
-                if (value < 0) {
-                    throw new AppError("Invalid " + opt + " value: " + valueString);
-                }
+        try {
+            var value = Integer.parseInt(valueString);
 
-                return value;
-            } catch (Exception ex) {
+            if (value < 0) {
                 throw new AppError("Invalid " + opt + " value: " + valueString);
             }
+
+            return value;
+        } catch (Exception ex) {
+            throw new AppError("Invalid " + opt + " value: " + valueString);
         }
+    }
 
-        private double requireWeight(String opt, Deque<String> opts)
-            throws AppError
-        {
-            var valueString = requireString(opt, opts);
+    private double requireWeight(String opt, Deque<String> opts)
+        throws AppError
+    {
+        var valueString = requireString(opt, opts);
 
-            try {
-                var value = Double.parseDouble(valueString);
+        try {
+            var value = Double.parseDouble(valueString);
 
-                if (value < 0) {
-                    throw new AppError("Invalid " + opt + " value: " + valueString);
-                }
-
-                return value;
-            } catch (Exception ex) {
+            if (value < 0) {
                 throw new AppError("Invalid " + opt + " value: " + valueString);
             }
+
+            return value;
+        } catch (Exception ex) {
+            throw new AppError("Invalid " + opt + " value: " + valueString);
         }
     }
 }
