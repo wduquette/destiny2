@@ -36,6 +36,12 @@ public class ImportTool implements Tool {
     private static final String INTELLECT_BASE = "Intellect (Base)";
     private static final String STRENGTH_BASE = "Strength (Base)";
 
+    private static final String EQUIPPED = "Equipped";
+    private static final String TRUE = "true";
+
+    private static final String OWNER = "Owner";
+    private static final String VAULT = "Vault";
+
     private static final Set<String> TIERS_OF_INTEREST =
         Set.of(EXOTIC, LEGENDARY);
 
@@ -45,8 +51,8 @@ public class ImportTool implements Tool {
     //-------------------------------------------------------------------------
     // Instance Variables
 
+    // Character class to filter on, or null for all.
     private CharacterClass characterClass;
-    private String outputFile;
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -71,7 +77,6 @@ public class ImportTool implements Tool {
 Reads a Destiny Item Manager (DIM) armor CSV file and converts it
 into an Armory file.  The options are as follows:
 
-    -output        -- The output file name
     -class         -- warlock, titan, or hunter
 """;
     }
@@ -107,6 +112,14 @@ into an Armory file.  The options are as follows:
         var pieces = convertPieces(dim);
 
         // TODO: output file if need be.
+        if (characterClass != null) {
+            println("# Armory File: " + characterClass.toString().toLowerCase());
+        } else {
+            println("# Armory File: All Classes");
+        }
+        println("#");
+        println("# * = Equipped, - = Carried");
+        println();
         pieces.forEach(a -> println(a.asArmoryFileRow()));
     }
 
@@ -146,7 +159,7 @@ into an Armory file.  The options are as follows:
 
         // NEXT, get the remaining data.
         try {
-            var name = dim.get(row, NAME);
+            var name = convertName(dim, row);
             var rarity = tierStr.equals(EXOTIC) ? Rarity.EXOTIC : Rarity.LEGEND;
             var type = switch (dim.get(row,TYPE)) {
                 case HELMET -> Type.HEAD;
@@ -172,6 +185,20 @@ into an Armory file.  The options are as follows:
         }
     }
 
+    public String convertName(CSVReader dim, int row) {
+        var name = dim.get(row, NAME);
+
+        if (dim.get(row, EQUIPPED).equals(TRUE)) {
+            return "*" + name;
+        } else if (!dim.get(row, OWNER).equals(VAULT)) {
+            // In inventory
+            return "-" + name;
+        } else {
+            return name;
+        }
+
+    }
+
     /**
      * Parses the options and makes them available to the application.
      * @param opts The command line options
@@ -186,8 +213,6 @@ into an Armory file.  The options are as follows:
             }
 
             switch (opt) {
-                case "-output" ->
-                    outputFile = requireString(opt, opts);
                 case "-class" ->
                     characterClass = requireCharacterClass(opt, opts);
                 default ->
@@ -212,7 +237,7 @@ into an Armory file.  The options are as follows:
         var valueString = requireString(opt, opts);
 
         try {
-            return CharacterClass.valueOf(valueString);
+            return CharacterClass.valueOf(valueString.toUpperCase());
         } catch (Exception ex) {
             throw new AppError("Invalid " + opt + " value: " + valueString);
         }

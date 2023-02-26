@@ -61,7 +61,6 @@ public class CSVReader {
     private List<String> parseColumnNames(String line) {
         var scanner = new Scanner(line).useDelimiter(",");
         var result = new ArrayList<String>();
-        System.out.println("Columns: ");
 
         while (scanner.hasNext()) {
             result.add(scanner.next());

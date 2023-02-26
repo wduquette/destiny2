@@ -1,0 +1,26 @@
+# Armory File: hunter
+#
+# * = Equipped, - = Carried
+
+HEAD LEGEND "-Scatterhorn Mask"                2  12  12  12  20   2
+HEAD EXOTIC "-Knucklehead Radar"               3  13  20  12  10   9
+ARMS EXOTIC "-Shinobu's Vow"                  10  17   6  11  10   9
+BODY EXOTIC "-The Dragon's Shadow"            16   8   7  14   2  12
+LEGS EXOTIC "-Orpheus Rig"                    17   2  14  10  10   9
+HEAD EXOTIC "*Foetracer"                      18   8   6  18   6   6
+ARMS LEGEND "*Scatterhorn Grasps"              2  12  12  12  20   2
+BODY LEGEND "*Ketchkiller's Vest"             12   6  16  20   6   6
+LEGS LEGEND "*Ketchkiller's Strides"          20   6   6  16   6  10
+BODY EXOTIC "Raiju's Harness"                  8  18   6  18  11   2
+LEGS EXOTIC "Lucky Pants"                      9  10  15   9  10  11
+LEGS EXOTIC "St0mp-EE5"                       12  13   9  21   2   9
+ARMS EXOTIC "Sealed Ahamkara Grasps"          13  10   9   2  13  14
+HEAD LEGEND "Ketchkiller's Mask"              22   6   6  17   2  14
+ARMS EXOTIC "Liar's Handshake"                 4  12  12  12  20   2
+ARMS LEGEND "Ketchkiller's Grips"             26   6   2  15  10   7
+BODY LEGEND "Scatterhorn Vest"                 2  12  12  12  20   2
+LEGS LEGEND "Scatterhorn Strides"              2  12  12  12  20   2
+LEGS EXOTIC "The Bombardiers"                 13  10   8  15   7  10
+LEGS EXOTIC "Gemini Jester"                   16   8   9   6  17   6
+HEAD EXOTIC "Graviton Forfeit"                21   2   8  16   2  10
+ARMS EXOTIC "Shards of Galanor"                8  15   9   6  14   8
