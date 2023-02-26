@@ -2,8 +2,8 @@
 
 # Settings used to find the "Current" suit.
 weights   0.8  1.0  1.0  0.0  0.0  0.0
-# minStats  20    60   20   20   30   60
-minStats  20    20   20   20   20   20
+minStats  20    60   20   20   30   60
+# minStats  20    20   20   20   20   20
 
 # Exotics being considered
 BODY EXOTIC "*Phoenix Protocol"            4  2 29  2 20  8
