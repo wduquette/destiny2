@@ -14,9 +14,10 @@ public class ArmoryApp {
     // Instance variables
 
     public final static Map<String, Tool> TOOLS = Map.of(
-        "list", new ListTool(),
-        "build", new BuildTool(),
-        "help", new HelpTool()
+        "list",   new ListTool(),
+        "build",  new BuildTool(),
+        "import", new ImportTool(),
+        "help",   new HelpTool()
     );
 
     //-------------------------------------------------------------------------

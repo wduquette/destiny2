@@ -45,17 +45,20 @@ public class StatMap extends HashMap<Stat,Integer> implements StatInfo {
         return true;
     }
 
-
     @Override
     public String numbers() {
-        return String.format("%3d %3d %3d %3d %3d %3d = %4d",
+        return String.format("%s = %4d", bareNumbers(), total());
+    }
+
+    @Override
+    public String bareNumbers() {
+        return String.format("%3d %3d %3d %3d %3d %3d",
             stat(Stat.MOB),
             stat(Stat.RES),
             stat(Stat.REC),
             stat(Stat.DIS),
             stat(Stat.INT),
-            stat(Stat.STR),
-            total()
+            stat(Stat.STR)
         );
     }
 }

@@ -31,6 +31,11 @@ public class Armor extends StatMap {
         return String.format("%s %s %-30s %s", type, rarity, name, numbers());
     }
 
+    public String asArmoryFileRow() {
+        return String.format("%s %s %-32s %s",
+            type, rarity, "\"" + name + "\"", bareNumbers());
+    }
+
     public String toString() {
         return "Armor[" + data() + "]";
     }

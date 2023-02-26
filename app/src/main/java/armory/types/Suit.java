@@ -78,6 +78,11 @@ public class Suit extends HashMap<Type, Armor> implements StatInfo {
         return stats().numbers();
     }
 
+    @Override
+    public String bareNumbers() {
+        return stats().bareNumbers();
+    }
+
     // Gets the total stats
     private StatInfo stats() {
         var vec = new StatMap();

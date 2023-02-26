@@ -41,4 +41,10 @@ public interface StatInfo {
      * @return The numbers.
      */
     String numbers();
+
+    /**
+     * Gets the stats as row of numbers, without the sum.
+     * @return The numbers.
+     */
+    String bareNumbers();
 }
