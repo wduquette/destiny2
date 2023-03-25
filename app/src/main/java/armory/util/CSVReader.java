@@ -91,8 +91,10 @@ public class CSVReader {
                     if (!scanner.hasNext()) {
                         throw new CSVException(lineNumber, "Unterminated double-quote");
                     }
-                    token = token + scanner.next();
+                    token = token + "," + scanner.next();
                 }
+
+                token = token.replace('"', ' ').trim();
             }
 
             result.add(token);
