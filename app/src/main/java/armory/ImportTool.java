@@ -12,6 +12,7 @@ import java.util.*;
  * armor CSV file.
  */
 public class ImportTool implements Tool {
+    private static final ImportComparator IMPORT_COMPARATOR = new ImportComparator();
     private static final String NAME = "Name";
 
     private static final String TIER = "Tier";
@@ -53,6 +54,8 @@ public class ImportTool implements Tool {
 
     // Character class to filter on, or null for all.
     private CharacterClass characterClass;
+
+    private final List<Armor> equipped = new ArrayList<>();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -110,9 +113,8 @@ into an Armory file.  The options are as follows:
 
         // NEXT, convert the rows into Armor values.
         var pieces = convertPieces(dim);
-        pieces.sort(new ImportComparator());
+        pieces.sort(IMPORT_COMPARATOR);
 
-        // TODO: output file if need be.
         if (characterClass != null) {
             println("# Armory File: " + characterClass.toString().toLowerCase());
         } else {
@@ -121,6 +123,24 @@ into an Armory file.  The options are as follows:
         println("#");
         println("# * = Equipped, - = Carried");
         println();
+
+        // NEXT, add the special stuff if this is class-specific.
+        if (characterClass != null) {
+            // FIRST, add the default weights and mins
+            println("weights  0.8 1.0 1.0 0.0 0.0 0.0");
+            println("minStats  20  20  20  20  20  20");
+            println();
+
+            // NEXT, add the current suit.
+            if (!equipped.isEmpty()) {
+                equipped.sort(Comparator.comparing(Armor::type));
+                println("suit \"Current\"");
+                equipped.forEach(a -> println(a.asArmoryFileRow()));
+                println();
+            }
+        }
+
+        // NEXT, add all of the armor pieces in order.
         pieces.forEach(a -> println(a.asArmoryFileRow()));
     }
 
@@ -178,6 +198,10 @@ into an Armory file.  The options are as follows:
             piece.put(Stat.DIS, Integer.parseInt(dim.get(row, DISCIPLINE_BASE)));
             piece.put(Stat.INT, Integer.parseInt(dim.get(row, INTELLECT_BASE)));
             piece.put(Stat.STR, Integer.parseInt(dim.get(row, STRENGTH_BASE)));
+
+            if (dim.get(row,EQUIPPED).equals("true")) {
+                equipped.add(piece);
+            }
 
             return Optional.of(piece);
         } catch (Exception ex) {
