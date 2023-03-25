@@ -110,6 +110,7 @@ into an Armory file.  The options are as follows:
 
         // NEXT, convert the rows into Armor values.
         var pieces = convertPieces(dim);
+        pieces.sort(new ImportComparator());
 
         // TODO: output file if need be.
         if (characterClass != null) {
@@ -240,6 +241,34 @@ into an Armory file.  The options are as follows:
             return CharacterClass.valueOf(valueString.toUpperCase());
         } catch (Exception ex) {
             throw new AppError("Invalid " + opt + " value: " + valueString);
+        }
+    }
+
+    private static class ImportComparator implements Comparator<Armor> {
+        @Override
+        public int compare(Armor o1, Armor o2) {
+            // FIRST, exotics sort before others
+            if (o1.isExotic() && !o2.isExotic()) {
+                return -1;
+            } else if (!o1.isExotic() && o2.isExotic()) {
+                return 1;
+            }
+
+            // NEXT, sort by type
+            var t1 = o1.type().ordinal();
+            var t2 = o2.type().ordinal();
+
+            if (t1 != t2) {
+                return Integer.compare(o1.type().ordinal(), o2.type().ordinal());
+            }
+
+            // NEXT, sort by name.
+            if (!o1.name().equals(o2.name())) {
+                return String.CASE_INSENSITIVE_ORDER.compare(o1.name(), o2.name());
+            }
+
+            // FINALLY, sort for total stats, highest total first.
+            return Integer.compare(o2.total(), o1.total());
         }
     }
 }
