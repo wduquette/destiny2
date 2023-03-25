@@ -161,7 +161,16 @@ into an Armory file.  The options are as follows:
         }
 
         // NEXT, add all the armor pieces in order.
-        pieces.forEach(a -> println(a.asArmoryFileRow()));
+        println("# Exotic Armor");
+        pieces.stream()
+            .filter(Armor::isExotic)
+            .forEach(a -> println(a.asArmoryFileRow()));
+        println();
+
+        println("# Legacy Armor");
+        pieces.stream()
+            .filter(a -> !a.isExotic())
+            .forEach(a -> println(a.asArmoryFileRow()));
     }
 
     private List<Armor> convertPieces(CSVReader dim) {
