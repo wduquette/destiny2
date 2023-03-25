@@ -43,6 +43,8 @@ public class ImportTool implements Tool {
     private static final String OWNER = "Owner";
     private static final String VAULT = "Vault";
 
+    private static final String LOADOUTS = "Loadouts";
+
     private static final Set<String> TIERS_OF_INTEREST =
         Set.of(EXOTIC, LEGENDARY);
 
@@ -55,7 +57,16 @@ public class ImportTool implements Tool {
     // Character class to filter on, or null for all.
     private CharacterClass characterClass;
 
+    //
+    // Data when filtering on a specific character class
+    //
+
+    // Pieces of armor that are currently equipped.
     private final List<Armor> equipped = new ArrayList<>();
+
+    // Pieces of armor by loadout.  Use a linked hashmap to preserve
+    // the loadout name order.
+    private final Map<String,List<Armor>> loadouts = new LinkedHashMap<>();
 
     //-------------------------------------------------------------------------
     // Constructor
@@ -138,9 +149,18 @@ into an Armory file.  The options are as follows:
                 equipped.forEach(a -> println(a.asArmoryFileRow()));
                 println();
             }
+
+            // NEXT, add each loadout
+            for (var name : loadouts.keySet()) {
+                var suit = loadouts.get(name);
+                suit.sort(Comparator.comparing(Armor::type));
+                println("suit \"" + name + "\"");
+                suit.forEach(a -> println(a.asArmoryFileRow()));
+                println();
+            }
         }
 
-        // NEXT, add all of the armor pieces in order.
+        // NEXT, add all the armor pieces in order.
         pieces.forEach(a -> println(a.asArmoryFileRow()));
     }
 
@@ -203,6 +223,11 @@ into an Armory file.  The options are as follows:
                 equipped.add(piece);
             }
 
+            for (var loadout : getLoadouts(dim, row)) {
+                var suit = loadouts.computeIfAbsent(loadout, dummy -> new ArrayList<>());
+                suit.add(piece);
+            }
+
             return Optional.of(piece);
         } catch (Exception ex) {
             throw new AppError("Could not import row at line " + (row + 2) +
@@ -221,7 +246,20 @@ into an Armory file.  The options are as follows:
         } else {
             return name;
         }
+    }
 
+    // Gets a list of the loadout names for this row.
+    public List<String> getLoadouts(CSVReader dim, int row) {
+        var result = new ArrayList<String>();
+        var names = dim.get(row, LOADOUTS);
+
+        if (!names.trim().isEmpty()) {
+            for (var name : dim.get(row, LOADOUTS).split(",")) {
+                result.add(name.trim());
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -291,7 +329,7 @@ into an Armory file.  The options are as follows:
                 return String.CASE_INSENSITIVE_ORDER.compare(o1.name(), o2.name());
             }
 
-            // FINALLY, sort for total stats, highest total first.
+            // FINALLY, sort for total stats, putting the highest total first.
             return Integer.compare(o2.total(), o1.total());
         }
     }
