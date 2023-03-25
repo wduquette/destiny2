@@ -85,7 +85,17 @@ public class CSVReader {
         var result = new ArrayList<String>();
 
         while (scanner.hasNext()) {
-            result.add(scanner.next());
+            var token = scanner.next();
+            if (token.startsWith("\"")) {
+                while (!token.endsWith("\"")) {
+                    if (!scanner.hasNext()) {
+                        throw new CSVException(lineNumber, "Unterminated double-quote");
+                    }
+                    token = token + scanner.next();
+                }
+            }
+
+            result.add(token);
         }
 
         // hasNext() is false at the last column, if the value is empty.

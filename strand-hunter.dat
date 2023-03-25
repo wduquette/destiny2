@@ -1,0 +1,54 @@
+# Armory File: strand-hunter
+#
+# * = Equipped, - = Carried
+
+weights  0.8 1.0 1.0 0.0 0.0 0.0
+minStats  20  20  20  20  20  20
+
+suit "Current"
+HEAD LEGEND "*Nea-Thonis Breather"             6  12   6  10  14   2
+ARMS LEGEND "*Unyielding Favor Grips"         18   2  12  14   8  10
+BODY EXOTIC "*The Sixth Coyote"               21   8   3  18   2  10
+LEGS LEGEND "*Ketchkiller's Strides"          20   6   6  16   6  10
+
+
+# Exotics being considered
+BODY EXOTIC "-Ophidia Spathe"                 14  12  10   9   2  19
+BODY EXOTIC "*The Sixth Coyote"               21   8   3  18   2  10
+BODY EXOTIC "The Dragon's Shadow"             16   8   7  14   2  12
+LEGS EXOTIC "The Bombardiers"                 13  10   8  15   7  10
+
+# HEAD EXOTIC "Celestial Nighthawk"             10  16   7  12  13   6
+# HEAD EXOTIC "Foetracer"                       18   8   6  18   6   6
+# HEAD EXOTIC "Graviton Forfeit"                21   2   8  16   2  10
+# HEAD EXOTIC "Knucklehead Radar"                3  13  20  12  10   9
+# ARMS EXOTIC "Liar's Handshake"                 4  12  12  12  20   2
+# ARMS EXOTIC "Oathkeeper"                      11  17   3  23   2   6
+# ARMS EXOTIC "Sealed Ahamkara Grasps"          13  10   9   2  13  14
+# ARMS EXOTIC "Shards of Galanor"                8  15   9   6  14   8
+# ARMS EXOTIC "Shinobu's Vow"                   10  17   6  11  10   9
+# BODY EXOTIC "Gwisin Vest"                      9  15  12  10  12   8
+# BODY EXOTIC "Raiju's Harness"                  8  18   6  18  11   2
+# BODY EXOTIC "Raiju's Harness"                  6  20   6  14  13   2
+# LEGS EXOTIC "Fr0st-EE5"                       11  13   7   6  19   6
+# LEGS EXOTIC "Gemini Jester"                   16   8   9   6  17   6
+# LEGS EXOTIC "Lucky Pants"                      9  10  15   9  10  11
+# LEGS EXOTIC "Orpheus Rig"                     17   2  14  10  10   9
+# LEGS EXOTIC "St0mp-EE5"                       12  13   9  21   2   9
+
+# Legendary
+HEAD LEGEND "Scatterhorn Mask"                 2  12  12  12  20   2
+HEAD LEGEND "-Road Complex AA1"               11  12   2   8  12   7
+ARMS LEGEND "-Scatterhorn Grasps"              2  12  12  12  20   2
+HEAD LEGEND "*Nea-Thonis Breather"             6  12   6  10  14   2
+ARMS LEGEND "*Unyielding Favor Grips"         18   2  12  14   8  10
+LEGS LEGEND "*Ketchkiller's Strides"          20   6   6  16   6  10
+HEAD LEGEND "Ketchkiller's Mask"              22   6   6  17   2  14
+ARMS LEGEND "Ketchkiller's Grips"             26   6   2  15  10   7
+BODY LEGEND "Scatterhorn Vest"                 2  12  12  12  20   2
+LEGS LEGEND "Scatterhorn Strides"              2  12  12  12  20   2
+BODY LEGEND "Ketchkiller's Vest"              12   6  16  20   6   6
+LEGS LEGEND "Unyielding Favor Strides"        18   2  12   9  21   2
+ARMS LEGEND "Unyielding Favor Grips"           6  16  10  10   2  20
+BODY LEGEND "Unyielding Favor Vest"           22   2   8   2  19   9
+LEGS LEGEND "Iron Companion Boots"             6  13  12  20  12   2
